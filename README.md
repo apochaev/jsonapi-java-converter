@@ -1,1 +1,1 @@
-# jsonapi-io
+# jsonapi-java-converter
