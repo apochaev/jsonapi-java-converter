@@ -27,14 +27,36 @@ class ToJsonApiConverter {
 		Field idField = findIdField(obj);
 		String id = getStringValue(obj, idField);
 
-		Class<? extends Object> clazz = obj.getClass();
+		Map<String, Field> fieldMap = findAttributeFields(obj.getClass(), new HashMap<>());
+		Map<String, Object> attributeMap = getFieldValues(obj, fieldMap);
 
-		Map<String, Field> fieldMap = new HashMap<>();
+		return createJsonApiObjectString(id, type, attributeMap);
+	}
 
+	private Map<String, Object> getFieldValues(Object obj, Map<String, Field> fieldMap) {
+		Map<String, Object> result = new HashMap<>();
+
+		for(String key : fieldMap.keySet()) {
+			Field field = fieldMap.get(key);
+			result.put(key, getObjectValue(obj, field));
+		}
+
+		return result;
+	}
+
+	private Object getObjectValue(Object obj, Field field) {
+		try {
+			field.setAccessible(true);
+			return field.get(obj);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private Map<String, Field> findAttributeFields(Class<? extends Object> clazz, Map<String, Field> fieldMap) {
 		Field[] fields = clazz.getDeclaredFields();
 		if (fields != null) {
 			for (Field field: fields) {
-//				JsonApiId jsonApiId = field.getAnnotation(JsonApiIgnore.class);
 				JsonApiIgnore jsonApiIgnore = field.getAnnotation(JsonApiIgnore.class);
 				if (jsonApiIgnore == null) {
 					if (fieldMap.containsKey( field.getName())) {
@@ -46,7 +68,11 @@ class ToJsonApiConverter {
 			}
 		}
 
-		return createJsonApiObjectString(id, type);
+		if (clazz.getSuperclass() != null) {
+			return findAttributeFields(clazz.getSuperclass(), fieldMap);
+		}
+
+		return fieldMap;
 	}
 
 	private String getType(Object obj) {
@@ -63,10 +89,14 @@ class ToJsonApiConverter {
 				"Class must be annotated with @" + JsonApiObject.class.getSimpleName());
 	}
 
-	private String createJsonApiObjectString(String id, String type) {
+	private String createJsonApiObjectString(String id, String type, Map<String, Object> attributeMap) {
 	    ObjectNode user = mapper.createObjectNode();
 	    user.put("id", id);
 	    user.put("type", type);
+
+	    if (!attributeMap.isEmpty()) {
+	    	user.putPOJO("attributes", attributeMap);
+	    }
 
 	    try {
 			return mapper.writeValueAsString(user);

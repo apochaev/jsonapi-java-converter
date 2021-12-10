@@ -12,5 +12,5 @@ public @interface JsonApiAttribute {
 	 * Json Api attribute key.
 	 * @return attribute key
 	 */
-	String value();
+	String value() default "";
 }
