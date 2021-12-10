@@ -14,14 +14,29 @@ import us.pochaev.jsonapi.converter.annotations.JsonApiObject;
 class ToJsonApiConverter {
 	private final static ObjectMapper mapper = new ObjectMapper();
 
-
 	public String convert(Object obj) {
 		Objects.requireNonNull(obj);
 
-		String type = parseType(obj);
-		String id = parseId(obj);
+		String type = getType(obj);
 
+
+		Field idField = findIdField(obj);
+		String id = getStringValue(obj, idField);
+
+//		for ()
 		return createJsonApiObjectString(id, type);
+	}
+
+	private String getType(Object obj) {
+		JsonApiObject jsonApiObject = obj.getClass().getAnnotation(JsonApiObject.class);
+		if (jsonApiObject != null) {
+			String type = jsonApiObject.value();
+			if (type != null && type.trim().length() > 0) {
+				return type;
+			}
+			throw new IllegalArgumentException("@JsonObject value may not be blank");
+		}
+		throw new IllegalArgumentException("Class must be annotated with @JsonObject");
 	}
 
 	private String createJsonApiObjectString(String id, String type) {
@@ -34,11 +49,6 @@ class ToJsonApiConverter {
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private String parseId(Object obj) {
-		Field idField = findIdField(obj);
-		return getStringValue(obj, idField);
 	}
 
 	private String getStringValue(Object obj, Field idField) {
@@ -75,12 +85,6 @@ class ToJsonApiConverter {
 							"Class must have a single field annotated with @JsonApiId"));
 	}
 
-	private String parseType(Object obj) {
-		JsonApiObject jsonApiObject = obj.getClass().getAnnotation(JsonApiObject.class);
-		if (jsonApiObject != null) {
-			return jsonApiObject.value();
-		}
-		throw new IllegalArgumentException("Class must be annotated with @JsonObject");
-	}
+
 
 }

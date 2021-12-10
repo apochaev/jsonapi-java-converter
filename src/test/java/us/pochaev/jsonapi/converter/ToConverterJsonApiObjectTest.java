@@ -12,6 +12,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.path.json.JsonPath;
+import us.pochaev.jsonapi.converter.annotations.JsonApiId;
+import us.pochaev.jsonapi.converter.annotations.JsonApiObject;
 import us.pochaev.jsonapi.converter.testclasses.JsonApiResourceObject;
 
 public class ToConverterJsonApiObjectTest {
@@ -19,6 +21,17 @@ public class ToConverterJsonApiObjectTest {
 	class NotJsonApiObject {
 	}
 
+	@JsonApiObject("")
+	class EmptyType {
+		@JsonApiId
+		private Object id;
+	}
+
+	@JsonApiObject(" ")
+	class BlankType {
+		@JsonApiId
+		private Object id;
+	}
 
 	@Test
 	@DisplayName("When null then exception")
@@ -53,5 +66,23 @@ public class ToConverterJsonApiObjectTest {
 
 		assertEquals(id, json.getString("id"));
 		assertEquals("JsonApiResourceObject", json.getString("type"));
+	}
+
+	@Test
+	@DisplayName("When empty type then exception")
+	public void whenEmptyTypeThenException() {
+		Object obj = new EmptyType();
+		Exception e = assertThrows(IllegalArgumentException.class, () ->
+			JsonApiConverter.toJsonApiString(obj));
+		assertEquals("@JsonObject value may not be blank", e.getMessage());
+	}
+
+	@Test
+	@DisplayName("When blank type then exception")
+	public void whenBlankTypeThenException() {
+		Object obj = new BlankType();
+		Exception e = assertThrows(IllegalArgumentException.class, () ->
+			JsonApiConverter.toJsonApiString(obj));
+		assertEquals("@JsonObject value may not be blank", e.getMessage());
 	}
 }
