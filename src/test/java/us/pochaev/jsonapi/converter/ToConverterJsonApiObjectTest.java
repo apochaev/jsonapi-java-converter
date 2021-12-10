@@ -113,7 +113,7 @@ public class ToConverterJsonApiObjectTest {
 	}
 
 	@Test
-	@DisplayName("When non annotated child class then exception")
+	@DisplayName("When not annotated child class then exception")
 	public void whenNotAnnotatedChildClassThenConvertAsParentType() throws Exception {
 		Object obj = new NotAnnotatedChild();
 

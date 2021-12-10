@@ -32,22 +32,37 @@ public class ToConverterJsonApiIdTest {
 		Object id2;
 	}
 
+	@JsonApiObject("TwoJsonapiIdsParentObject")
+	class TwoJsonApiIdsParentObject extends JsonApiResourceObject {
+		@JsonApiId
+		private Object id;
+	}
+
 	@Test
 	@DisplayName("When no @JsonApiId then exception")
 	public void whenNoJsonApiIdThenException() {
 		Object obj = new NoJsonApiIdObject();
 		Exception e = assertThrows(IllegalArgumentException.class, () ->
 			JsonApiConverter.toJsonApiString(obj));
-		assertEquals("Class must have a single field annotated with @JsonApiId", e.getMessage());
+		assertEquals("Class hierarchy must have a field annotated with @JsonApiId", e.getMessage());
 	}
 
 	@Test
-	@DisplayName("When more then one @JsonApiId then exception")
-	public void whenMoreThenOneJsonApiIdThenException() {
+	@DisplayName("When more then one @JsonApiId in class then exception")
+	public void whenMoreThenOneJsonApiIdInClassThenException() {
 		Object obj = new TwoJsonApiIdsObject();
 		Exception e = assertThrows(IllegalArgumentException.class, () ->
 			JsonApiConverter.toJsonApiString(obj));
-		assertEquals("Class must have a single field annotated with @JsonApiId", e.getMessage());
+		assertEquals("Class hierarchy must have a single field annotated with @JsonApiId", e.getMessage());
+	}
+
+	@Test
+	@DisplayName("When more then one @JsonApiId in class hierarchy then exception")
+	public void whenMoreThenOneJsonApiIdInHierarchyThenException() {
+		Object obj = new TwoJsonApiIdsParentObject();
+		Exception e = assertThrows(IllegalArgumentException.class, () ->
+			JsonApiConverter.toJsonApiString(obj));
+		assertEquals("Class hierarchy must have a single field annotated with @JsonApiId", e.getMessage());
 	}
 
 	@Test
