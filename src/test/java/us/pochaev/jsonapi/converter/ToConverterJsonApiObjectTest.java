@@ -96,7 +96,7 @@ public class ToConverterJsonApiObjectTest {
 	}
 
 	@Test
-	@DisplayName("When annotated child and parent classes then convert as child type")
+	@DisplayName("When annotated parent, annotated child classes then convert as child type")
 	public void whenAnnotatedChildClassThenConvertAsChildType() throws Exception {
 		Object obj = new AnnotatedChild();
 
@@ -113,7 +113,7 @@ public class ToConverterJsonApiObjectTest {
 	}
 
 	@Test
-	@DisplayName("When not annotated child class then exception")
+	@DisplayName("When annotated parent, not annotated child class then exception")
 	public void whenNotAnnotatedChildClassThenConvertAsParentType() throws Exception {
 		Object obj = new NotAnnotatedChild();
 
