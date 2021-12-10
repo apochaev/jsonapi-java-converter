@@ -1,14 +1,19 @@
 package us.pochaev.jsonapi.converter;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import us.pochaev.jsonapi.converter.annotations.JsonApiAttribute;
 import us.pochaev.jsonapi.converter.annotations.JsonApiId;
+import us.pochaev.jsonapi.converter.annotations.JsonApiIgnore;
 import us.pochaev.jsonapi.converter.annotations.JsonApiObject;
 
 class ToJsonApiConverter {
@@ -19,11 +24,28 @@ class ToJsonApiConverter {
 
 		String type = getType(obj);
 
-
 		Field idField = findIdField(obj);
 		String id = getStringValue(obj, idField);
 
-//		for ()
+		Class<? extends Object> clazz = obj.getClass();
+
+		Map<String, Field> fieldMap = new HashMap<>();
+
+		Field[] fields = clazz.getDeclaredFields();
+		if (fields != null) {
+			for (Field field: fields) {
+//				JsonApiId jsonApiId = field.getAnnotation(JsonApiIgnore.class);
+				JsonApiIgnore jsonApiIgnore = field.getAnnotation(JsonApiIgnore.class);
+				if (jsonApiIgnore == null) {
+					if (fieldMap.containsKey( field.getName())) {
+						//this should be a compile time exception
+						throw new RuntimeException("Duplicate field " + field.getName() + " in the class hierarchy.");
+					}
+					fieldMap.put(field.getName(), field);
+				}
+			}
+		}
+
 		return createJsonApiObjectString(id, type);
 	}
 
@@ -34,9 +56,11 @@ class ToJsonApiConverter {
 			if (type != null && type.trim().length() > 0) {
 				return type;
 			}
-			throw new IllegalArgumentException("@JsonObject value may not be blank");
+			throw new IllegalArgumentException(
+					"@" + JsonApiObject.class.getSimpleName() + " value may not be blank");
 		}
-		throw new IllegalArgumentException("Class must be annotated with @JsonObject");
+		throw new IllegalArgumentException(
+				"Class must be annotated with @" + JsonApiObject.class.getSimpleName());
 	}
 
 	private String createJsonApiObjectString(String id, String type) {
@@ -62,27 +86,49 @@ class ToJsonApiConverter {
 	}
 
 	private Field findIdField(Object obj) {
-		Optional<Field> id = Optional.empty();
+		List<Field> idFields = findIdFields(obj.getClass(), new LinkedList<>());
 
-		Field[] fields = obj.getClass().getDeclaredFields();
+		if (idFields.size() == 1)  {
+			return idFields.get(0);
+		}
+		throw new IllegalArgumentException(
+				"Class hierarchy must have a field annotated with @" +  JsonApiId.class.getSimpleName());
+	}
+
+	private List<Field> findIdFields(Class<? extends Object> clazz, List<Field> idFields) {
+		Field[] fields = clazz.getDeclaredFields();
 		if (fields != null) {
-
 			for (Field field: fields) {
 				JsonApiId jsonApiId = field.getAnnotation(JsonApiId.class);
 				if (jsonApiId != null) {
-					if (id.isPresent()) {
+					JsonApiAttribute jsonApiAttribute = field.getAnnotation(JsonApiAttribute.class);
+					if (jsonApiAttribute !=null) {
 						throw new IllegalArgumentException(
-								"Class must have a single field annotated with @JsonApiId");
+								"Field annotated with @"  + JsonApiId.class.getSimpleName() +
+								" may not be annotated with @" + JsonApiAttribute.class.getSimpleName());
 					}
-					id = Optional.of(field);
+
+					JsonApiIgnore jsonApiIgnore = field.getAnnotation(JsonApiIgnore.class);
+					if (jsonApiIgnore !=null) {
+						throw new IllegalArgumentException(
+								"Field annotated with @" + JsonApiId.class.getSimpleName() +
+								" may not be annotated with @" + JsonApiIgnore.class.getSimpleName());
+					}
+
+					if (idFields.size() > 0) {
+						throw new IllegalArgumentException(
+								"Class hierarchy must have a single field annotated with @" + JsonApiId.class.getSimpleName());
+					}
+					idFields.add(field);
 				}
 			}
 		}
 
-		return id
-				.orElseThrow(() ->
-					new IllegalArgumentException(
-							"Class must have a single field annotated with @JsonApiId"));
+		if (clazz.getSuperclass() != null) {
+			return findIdFields(clazz.getSuperclass(), idFields);
+		}
+
+		return idFields;
 	}
 
 

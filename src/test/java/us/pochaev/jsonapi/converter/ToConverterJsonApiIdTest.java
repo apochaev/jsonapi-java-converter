@@ -13,7 +13,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.path.json.JsonPath;
+import us.pochaev.jsonapi.converter.annotations.JsonApiAttribute;
 import us.pochaev.jsonapi.converter.annotations.JsonApiId;
+import us.pochaev.jsonapi.converter.annotations.JsonApiIgnore;
 import us.pochaev.jsonapi.converter.annotations.JsonApiObject;
 import us.pochaev.jsonapi.converter.testclasses.JsonApiResourceObject;
 
@@ -21,6 +23,24 @@ public class ToConverterJsonApiIdTest {
 
 	@JsonApiObject("NoJsonApiIdObject")
 	class NoJsonApiIdObject {
+	}
+
+	@JsonApiObject("JsonApiIdIgnoreObject")
+	class JsonApiIdIgnoreObject {
+		@JsonApiId @JsonApiIgnore
+		Object id;
+	}
+
+	@JsonApiObject("JsonApiIdAttributeObject")
+	class JsonApiIdAttributeObject {
+		@JsonApiId @JsonApiAttribute
+		Object id;
+	}
+
+	@JsonApiObject("JsonApiIdAttributeIgnoreObject")
+	class JsonApiIdAttributeIgnoreObject {
+		@JsonApiId @JsonApiAttribute @JsonApiIgnore
+		Object id;
 	}
 
 	@JsonApiObject("TwoJsonApiIdsObject")
@@ -63,6 +83,33 @@ public class ToConverterJsonApiIdTest {
 		Exception e = assertThrows(IllegalArgumentException.class, () ->
 			JsonApiConverter.toJsonApiString(obj));
 		assertEquals("Class hierarchy must have a single field annotated with @JsonApiId", e.getMessage());
+	}
+
+	@Test
+	@DisplayName("When @JsonApiId and @JsonApiIgnore then exception")
+	public void whenJsonApiIdAndJsonApiIgnoreThenException() {
+		Object obj = new JsonApiIdIgnoreObject();
+		Exception e = assertThrows(IllegalArgumentException.class, () ->
+			JsonApiConverter.toJsonApiString(obj));
+		assertEquals("Field annotated with @JsonApiId may not be annotated with @JsonApiIgnore", e.getMessage());
+	}
+
+	@Test
+	@DisplayName("When @JsonApiId and @JsonApiAttribute then exception")
+	public void whenJsonApiIdAndJsonApiAttributeThenException() {
+		Object obj = new JsonApiIdAttributeObject();
+		Exception e = assertThrows(IllegalArgumentException.class, () ->
+			JsonApiConverter.toJsonApiString(obj));
+		assertEquals("Field annotated with @JsonApiId may not be annotated with @JsonApiAttribute", e.getMessage());
+	}
+
+	@Test
+	@DisplayName("When @JsonApiId and @JsonApiAttribute and @JsonApiIgnore then exception")
+	public void whenJsonApiIdAndJsonApiAttributeAndJsonApiIgnoreThenException() {
+		Object obj = new JsonApiIdAttributeIgnoreObject();
+		Exception e = assertThrows(IllegalArgumentException.class, () ->
+			JsonApiConverter.toJsonApiString(obj));
+		assertEquals("Field annotated with @JsonApiId may not be annotated with @JsonApiAttribute", e.getMessage());
 	}
 
 	@Test
