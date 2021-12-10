@@ -4,6 +4,7 @@ import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.isJson;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.UUID;
@@ -32,6 +33,14 @@ public class ToConverterJsonApiObjectTest {
 		@JsonApiId
 		private Object id;
 	}
+
+	@JsonApiObject("AnnotatedChild")
+	class AnnotatedChild extends JsonApiResourceObject {
+	}
+
+	class NotAnnotatedChild extends JsonApiResourceObject {
+	}
+
 
 	@Test
 	@DisplayName("When null then exception")
@@ -84,5 +93,32 @@ public class ToConverterJsonApiObjectTest {
 		Exception e = assertThrows(IllegalArgumentException.class, () ->
 			JsonApiConverter.toJsonApiString(obj));
 		assertEquals("@JsonObject value may not be blank", e.getMessage());
+	}
+
+	@Test
+	@DisplayName("When annotated child and parent classes then convert as child type")
+	public void whenAnnotatedChildClassThenConvertAsChildType() throws Exception {
+		Object obj = new AnnotatedChild();
+
+		String jsonString = JsonApiConverter.toJsonApiString(obj);
+
+		assertThat(jsonString, isJson());
+		assertThat(jsonString, hasJsonPath("id"));
+		assertThat(jsonString, hasJsonPath("type"));
+
+		JsonPath json = JsonPath.from(jsonString);
+
+		assertNull(json.getString("id"));
+		assertEquals("AnnotatedChild", json.getString("type"));
+	}
+
+	@Test
+	@DisplayName("When non annotated child class then exception")
+	public void whenNotAnnotatedChildClassThenConvertAsParentType() throws Exception {
+		Object obj = new NotAnnotatedChild();
+
+		Exception e = assertThrows(IllegalArgumentException.class, () ->
+			JsonApiConverter.toJsonApiString(obj));
+		assertEquals("Class must be annotated with @JsonObject", e.getMessage());
 	}
 }
