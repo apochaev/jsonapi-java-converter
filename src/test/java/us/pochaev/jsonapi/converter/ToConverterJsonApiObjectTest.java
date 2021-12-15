@@ -4,54 +4,52 @@ import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.isJson;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.path.json.JsonPath;
+import us.pochaev.jsonapi.annotations.JsonApiObject;
 import us.pochaev.jsonapi.converter.annotations.JsonApiId;
-import us.pochaev.jsonapi.converter.annotations.JsonApiObject;
-import us.pochaev.jsonapi.converter.testclasses.JsonApiResourceObject;
+
 
 public class ToConverterJsonApiObjectTest {
+	static final String TYPE_CUSTOM = "custom";
 
 	class NotJsonApiObject {
 	}
 
+	@JsonApiObject
+	class DefaultType {
+		@JsonApiId public Object id;
+	}
+
 	@JsonApiObject("")
 	class EmptyType {
-		@JsonApiId
-		private Object id;
+		@JsonApiId public Object id;
 	}
 
 	@JsonApiObject(" ")
 	class BlankType {
-		@JsonApiId
-		private Object id;
 	}
 
-	@JsonApiObject("AnnotatedChild")
-	class AnnotatedChild extends JsonApiResourceObject {
-	}
-
-	class NotAnnotatedChild extends JsonApiResourceObject {
+	@JsonApiObject(TYPE_CUSTOM)
+	class CustomType {
+		@JsonApiId public Object id;
 	}
 
 
 	@Test
-	@DisplayName("When null then exception")
-	public void whenNullThenException() {
+	@DisplayName("When null object then exception")
+	public void whenNullObjectThenException() {
 		Object obj = null;
 		assertThrows(NullPointerException.class, () ->
 			JsonApiConverter.toJsonApiString(obj));
 	}
 
 	@Test
-	@DisplayName("When not @JsonApiObject then exception")
+	@DisplayName("When NOT @JsonApiObject then exception")
 	public void whenNotJsonApiObjectThenException() {
 		Object obj = new NotJsonApiObject();
 		Exception e = assertThrows(IllegalArgumentException.class, () ->
@@ -60,35 +58,8 @@ public class ToConverterJsonApiObjectTest {
 	}
 
 	@Test
-	@DisplayName("When minimal @JsonApiObject then convert")
-	public void whenJsonApiObjectWithNonNullJsonApiIdThenSuccess() throws Exception {
-		String id = UUID.randomUUID().toString();
-		Object obj = new JsonApiResourceObject(id);
-
-		String jsonString = JsonApiConverter.toJsonApiString(obj);
-
-		assertThat(jsonString, isJson());
-		assertThat(jsonString, hasJsonPath("id"));
-		assertThat(jsonString, hasJsonPath("type"));
-
-		JsonPath json = JsonPath.from(jsonString);
-
-		assertEquals(id, json.getString("id"));
-		assertEquals("JsonApiResourceObject", json.getString("type"));
-	}
-
-	@Test
-	@DisplayName("When empty type then exception")
-	public void whenEmptyTypeThenException() {
-		Object obj = new EmptyType();
-		Exception e = assertThrows(IllegalArgumentException.class, () ->
-			JsonApiConverter.toJsonApiString(obj));
-		assertEquals("@JsonApiObject value may not be blank", e.getMessage());
-	}
-
-	@Test
-	@DisplayName("When blank type then exception")
-	public void whenBlankTypeThenException() {
+	@DisplayName("When blank value then exception")
+	public void whenBlankValueThenException() {
 		Object obj = new BlankType();
 		Exception e = assertThrows(IllegalArgumentException.class, () ->
 			JsonApiConverter.toJsonApiString(obj));
@@ -96,9 +67,10 @@ public class ToConverterJsonApiObjectTest {
 	}
 
 	@Test
-	@DisplayName("When annotated parent, annotated child classes then convert as child type")
-	public void whenAnnotatedChildClassThenConvertAsChildType() throws Exception {
-		Object obj = new AnnotatedChild();
+	@DisplayName("When default value then simple name type")
+	public void whenDefaultValueThenSimplenameType() {
+		DefaultType obj = new DefaultType();
+		obj.id = "unique";
 
 		String jsonString = JsonApiConverter.toJsonApiString(obj);
 
@@ -108,17 +80,44 @@ public class ToConverterJsonApiObjectTest {
 
 		JsonPath json = JsonPath.from(jsonString);
 
-		assertNull(json.getString("id"));
-		assertEquals("AnnotatedChild", json.getString("type"));
+		assertEquals(obj.id, json.getString("id"));
+		assertEquals(DefaultType.class.getSimpleName(), json.getString("type"));
 	}
 
 	@Test
-	@DisplayName("When annotated parent, not annotated child class then exception")
-	public void whenNotAnnotatedChildClassThenConvertAsParentType() throws Exception {
-		Object obj = new NotAnnotatedChild();
+	@DisplayName("When empty value then simple name type")
+	public void whenEmptyVaueThenSimpleNameType() {
+		EmptyType obj = new EmptyType();
+		obj.id = "unique";
 
-		Exception e = assertThrows(IllegalArgumentException.class, () ->
-			JsonApiConverter.toJsonApiString(obj));
-		assertEquals("Class must be annotated with @JsonApiObject", e.getMessage());
+		String jsonString = JsonApiConverter.toJsonApiString(obj);
+
+		assertThat(jsonString, isJson());
+		assertThat(jsonString, hasJsonPath("id"));
+		assertThat(jsonString, hasJsonPath("type"));
+
+		JsonPath json = JsonPath.from(jsonString);
+
+		assertEquals(obj.id, json.getString("id"));
+		assertEquals(EmptyType.class.getSimpleName(), json.getString("type"));
+	}
+
+
+	@Test
+	@DisplayName("When custom value then custom type")
+	public void whenJsonApiObjectWithNonNullJsonApiIdThenSuccess() throws Exception {
+		CustomType obj = new CustomType();
+		obj.id = "id";
+
+		String jsonString = JsonApiConverter.toJsonApiString(obj);
+
+		assertThat(jsonString, isJson());
+		assertThat(jsonString, hasJsonPath("id"));
+		assertThat(jsonString, hasJsonPath("type"));
+
+		JsonPath json = JsonPath.from(jsonString);
+
+		assertEquals(obj.id, json.getString("id"));
+		assertEquals(TYPE_CUSTOM, json.getString("type"));
 	}
 }

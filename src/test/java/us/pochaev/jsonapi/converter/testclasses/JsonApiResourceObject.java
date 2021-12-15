@@ -1,7 +1,7 @@
 package us.pochaev.jsonapi.converter.testclasses;
 
+import us.pochaev.jsonapi.annotations.JsonApiObject;
 import us.pochaev.jsonapi.converter.annotations.JsonApiId;
-import us.pochaev.jsonapi.converter.annotations.JsonApiObject;
 
 @JsonApiObject("JsonApiResourceObject")
 public class JsonApiResourceObject {

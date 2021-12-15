@@ -13,10 +13,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.path.json.JsonPath;
+import us.pochaev.jsonapi.annotations.JsonApiObject;
 import us.pochaev.jsonapi.converter.annotations.JsonApiAttribute;
 import us.pochaev.jsonapi.converter.annotations.JsonApiId;
 import us.pochaev.jsonapi.converter.annotations.JsonApiIgnore;
-import us.pochaev.jsonapi.converter.annotations.JsonApiObject;
 import us.pochaev.jsonapi.converter.testclasses.JsonApiResourceObject;
 
 public class ToConverterJsonApiIdTest {

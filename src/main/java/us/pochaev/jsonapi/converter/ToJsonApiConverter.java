@@ -11,10 +11,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import us.pochaev.jsonapi.annotations.JsonApiObject;
 import us.pochaev.jsonapi.converter.annotations.JsonApiAttribute;
 import us.pochaev.jsonapi.converter.annotations.JsonApiId;
 import us.pochaev.jsonapi.converter.annotations.JsonApiIgnore;
-import us.pochaev.jsonapi.converter.annotations.JsonApiObject;
 
 class ToJsonApiConverter {
 	private final static ObjectMapper mapper = new ObjectMapper();
@@ -80,16 +80,23 @@ class ToJsonApiConverter {
 
 	private String getType(Object obj) {
 		JsonApiObject jsonApiObject = obj.getClass().getAnnotation(JsonApiObject.class);
-		if (jsonApiObject != null) {
-			String type = jsonApiObject.value();
-			if (type != null && type.trim().length() > 0) {
-				return type;
-			}
+		if (jsonApiObject == null)
 			throw new IllegalArgumentException(
-					"@" + JsonApiObject.class.getSimpleName() + " value may not be blank");
-		}
+					"Class must be annotated with @" + JsonApiObject.class.getSimpleName());
+
+		String type = jsonApiObject.value();
+		if (type == null)
+			throw new IllegalArgumentException(
+					"@" + JsonApiObject.class.getSimpleName() + " value may not be null");
+
+		if (type.equals(JsonApiObject.DEFAULT_VALUE))
+			return obj.getClass().getSimpleName();
+
+		if (type.trim().length() > 0)
+			return type;
+
 		throw new IllegalArgumentException(
-				"Class must be annotated with @" + JsonApiObject.class.getSimpleName());
+				"@" + JsonApiObject.class.getSimpleName() + " value may not be blank");
 	}
 
 	private String createJsonApiObjectString(String id, String type, Map<String, Object> attributeMap) {
