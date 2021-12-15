@@ -16,9 +16,9 @@ import us.pochaev.jsonapi.converter.annotations.JsonApiObject;
 import us.pochaev.jsonapi.converter.annotations.JsonApiObject.UnmarkedFields;
 
 @SuppressWarnings("unused")
-public class ToConverterIncludeAllPrivateTest {
+public class ToConverterIncludeAnnotatedTest {
 
-	@JsonApiObject(value = "includeAllPrivateParent", includeUnmarkedFields = UnmarkedFields.All )
+	@JsonApiObject(value = "parent", includeUnmarkedFields = UnmarkedFields.All )
 	class IncudeAllPrivateParent {
 		@JsonApiId
 		private String id = "privateParentId";
@@ -28,7 +28,7 @@ public class ToConverterIncludeAllPrivateTest {
 		private String privateParentFieldIgnored = "privateParentFieldIgnored";
 	}
 
-	@JsonApiObject(value = "IncudeAllPrivateChild", includeUnmarkedFields = UnmarkedFields.All )
+	@JsonApiObject(value = "child", includeUnmarkedFields = UnmarkedFields.All )
 	class IncudeAllPrivateChild extends IncudeAllPrivateParent {
 		private String privateChildField = "privateChildField";
 		private String privateParentFieldToOverride = "privateParentFieldOverridden";

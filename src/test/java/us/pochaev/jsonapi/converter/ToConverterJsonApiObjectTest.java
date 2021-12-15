@@ -56,7 +56,7 @@ public class ToConverterJsonApiObjectTest {
 		Object obj = new NotJsonApiObject();
 		Exception e = assertThrows(IllegalArgumentException.class, () ->
 			JsonApiConverter.toJsonApiString(obj));
-		assertEquals("Class must be annotated with @JsonObject", e.getMessage());
+		assertEquals("Class must be annotated with @JsonApiObject", e.getMessage());
 	}
 
 	@Test
@@ -83,7 +83,7 @@ public class ToConverterJsonApiObjectTest {
 		Object obj = new EmptyType();
 		Exception e = assertThrows(IllegalArgumentException.class, () ->
 			JsonApiConverter.toJsonApiString(obj));
-		assertEquals("@JsonObject value may not be blank", e.getMessage());
+		assertEquals("@JsonApiObject value may not be blank", e.getMessage());
 	}
 
 	@Test
@@ -92,7 +92,7 @@ public class ToConverterJsonApiObjectTest {
 		Object obj = new BlankType();
 		Exception e = assertThrows(IllegalArgumentException.class, () ->
 			JsonApiConverter.toJsonApiString(obj));
-		assertEquals("@JsonObject value may not be blank", e.getMessage());
+		assertEquals("@JsonApiObject value may not be blank", e.getMessage());
 	}
 
 	@Test
@@ -119,6 +119,6 @@ public class ToConverterJsonApiObjectTest {
 
 		Exception e = assertThrows(IllegalArgumentException.class, () ->
 			JsonApiConverter.toJsonApiString(obj));
-		assertEquals("Class must be annotated with @JsonObject", e.getMessage());
+		assertEquals("Class must be annotated with @JsonApiObject", e.getMessage());
 	}
 }

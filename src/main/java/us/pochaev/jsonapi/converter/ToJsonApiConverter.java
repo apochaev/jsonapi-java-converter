@@ -57,11 +57,14 @@ class ToJsonApiConverter {
 		Field[] fields = clazz.getDeclaredFields();
 		if (fields != null) {
 			for (Field field: fields) {
+				if (field.isSynthetic()) {
+					continue;
+				}
+
 				JsonApiIgnore jsonApiIgnore = field.getAnnotation(JsonApiIgnore.class);
 				if (jsonApiIgnore == null) {
 					if (fieldMap.containsKey( field.getName())) {
-						//this should be a compile time exception
-						throw new RuntimeException("Duplicate field " + field.getName() + " in the class hierarchy.");
+						continue; //skip parent field overwritten in child;
 					}
 					fieldMap.put(field.getName(), field);
 				}
@@ -126,9 +129,14 @@ class ToJsonApiConverter {
 	}
 
 	private List<Field> findIdFields(Class<? extends Object> clazz, List<Field> idFields) {
+
 		Field[] fields = clazz.getDeclaredFields();
 		if (fields != null) {
 			for (Field field: fields) {
+				if (field.isSynthetic()) {
+					continue;
+				}
+
 				JsonApiId jsonApiId = field.getAnnotation(JsonApiId.class);
 				if (jsonApiId != null) {
 					JsonApiAttribute jsonApiAttribute = field.getAnnotation(JsonApiAttribute.class);
