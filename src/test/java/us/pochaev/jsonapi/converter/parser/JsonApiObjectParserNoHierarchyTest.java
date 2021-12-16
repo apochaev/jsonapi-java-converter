@@ -1,20 +1,17 @@
-package us.pochaev.jsonapi.converter;
+package us.pochaev.jsonapi.converter.parser;
 
-import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
-import static com.jayway.jsonpath.matchers.JsonPathMatchers.isJson;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.restassured.path.json.JsonPath;
 import us.pochaev.jsonapi.annotations.JsonApiObject;
 import us.pochaev.jsonapi.converter.annotations.JsonApiId;
 
 
-public class ToConverterJsonApiObjectTest {
+public class JsonApiObjectParserNoHierarchyTest {
 	static final String TYPE_CUSTOM = "custom";
 
 	class NotJsonApiObject {
@@ -39,21 +36,27 @@ public class ToConverterJsonApiObjectTest {
 		@JsonApiId public Object id;
 	}
 
+	private JsonApiObjectParser jsonApiObjectParser;
+
+	@BeforeEach
+	public void beforeEach() {
+		jsonApiObjectParser = new JsonApiObjectParser();
+	}
 
 	@Test
 	@DisplayName("When null object then exception")
 	public void whenNullObjectThenException() {
 		Object obj = null;
 		assertThrows(NullPointerException.class, () ->
-			JsonApiConverter.toJsonApiString(obj));
+			jsonApiObjectParser.parseType(obj));
 	}
 
 	@Test
 	@DisplayName("When NOT @JsonApiObject then exception")
 	public void whenNotJsonApiObjectThenException() {
 		Object obj = new NotJsonApiObject();
-		Exception e = assertThrows(IllegalArgumentException.class, () ->
-			JsonApiConverter.toJsonApiString(obj));
+		Exception e = assertThrows(IllegalStateException.class, () ->
+			jsonApiObjectParser.parseType(obj));
 		assertEquals("Class must be annotated with @JsonApiObject", e.getMessage());
 	}
 
@@ -62,7 +65,7 @@ public class ToConverterJsonApiObjectTest {
 	public void whenBlankValueThenException() {
 		Object obj = new BlankType();
 		Exception e = assertThrows(IllegalArgumentException.class, () ->
-			JsonApiConverter.toJsonApiString(obj));
+			jsonApiObjectParser.parseType(obj));
 		assertEquals("@JsonApiObject value may not be blank", e.getMessage());
 	}
 
@@ -72,16 +75,9 @@ public class ToConverterJsonApiObjectTest {
 		DefaultType obj = new DefaultType();
 		obj.id = "unique";
 
-		String jsonString = JsonApiConverter.toJsonApiString(obj);
+		String type = jsonApiObjectParser.parseType(obj);
 
-		assertThat(jsonString, isJson());
-		assertThat(jsonString, hasJsonPath("id"));
-		assertThat(jsonString, hasJsonPath("type"));
-
-		JsonPath json = JsonPath.from(jsonString);
-
-		assertEquals(obj.id, json.getString("id"));
-		assertEquals(DefaultType.class.getSimpleName(), json.getString("type"));
+		assertEquals(DefaultType.class.getSimpleName(), type);
 	}
 
 	@Test
@@ -90,18 +86,10 @@ public class ToConverterJsonApiObjectTest {
 		EmptyType obj = new EmptyType();
 		obj.id = "unique";
 
-		String jsonString = JsonApiConverter.toJsonApiString(obj);
+		String type = jsonApiObjectParser.parseType(obj);
 
-		assertThat(jsonString, isJson());
-		assertThat(jsonString, hasJsonPath("id"));
-		assertThat(jsonString, hasJsonPath("type"));
-
-		JsonPath json = JsonPath.from(jsonString);
-
-		assertEquals(obj.id, json.getString("id"));
-		assertEquals(EmptyType.class.getSimpleName(), json.getString("type"));
+		assertEquals(EmptyType.class.getSimpleName(), type);
 	}
-
 
 	@Test
 	@DisplayName("When custom value then custom type")
@@ -109,15 +97,8 @@ public class ToConverterJsonApiObjectTest {
 		CustomType obj = new CustomType();
 		obj.id = "id";
 
-		String jsonString = JsonApiConverter.toJsonApiString(obj);
+		String type = jsonApiObjectParser.parseType(obj);
 
-		assertThat(jsonString, isJson());
-		assertThat(jsonString, hasJsonPath("id"));
-		assertThat(jsonString, hasJsonPath("type"));
-
-		JsonPath json = JsonPath.from(jsonString);
-
-		assertEquals(obj.id, json.getString("id"));
-		assertEquals(TYPE_CUSTOM, json.getString("type"));
+		assertEquals(TYPE_CUSTOM, type);
 	}
 }

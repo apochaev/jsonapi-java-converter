@@ -1,15 +1,9 @@
-package us.pochaev.jsonapi.converter;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+package us.pochaev.jsonapi.converter.parser;
 
 import us.pochaev.jsonapi.annotations.JsonApiObject;
 import us.pochaev.jsonapi.converter.annotations.JsonApiId;
 
-public class ToConverterJsonApiIdTest {
+public class JsonApiIdConverterTest {
 
 	@JsonApiObject
 	class NoJsonApiIdObject {
@@ -61,7 +55,7 @@ public class ToConverterJsonApiIdTest {
 		private Object id;
 	}
 */
-
+	/*
 	@Test
 	@DisplayName("When no @JsonApiId then exception")
 	public void whenNoJsonApiIdThenException() {
@@ -79,7 +73,7 @@ public class ToConverterJsonApiIdTest {
 			JsonApiConverter.toJsonApiString(obj));
 		assertEquals("Class hierarchy must have a field annotated with @JsonApiId", e.getMessage());
 	}
-/*
+
 	@Test
 	@DisplayName("When more then one @JsonApiId in class then exception")
 	public void whenMoreThenOneJsonApiIdInClassThenException() {
