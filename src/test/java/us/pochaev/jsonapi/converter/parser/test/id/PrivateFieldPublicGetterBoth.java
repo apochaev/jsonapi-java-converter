@@ -4,7 +4,12 @@ import us.pochaev.jsonapi.annotations.JsonApiObject;
 import us.pochaev.jsonapi.converter.annotations.JsonApiId;
 
 @JsonApiObject
-public class PrivateField {
+public class PrivateFieldPublicGetterBoth {
 	@JsonApiId
 	private Object id = Constants.ID;
+
+	@JsonApiId
+	public Object getId() {
+		return id;
+	}
 }
