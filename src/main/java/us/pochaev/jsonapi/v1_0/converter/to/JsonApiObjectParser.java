@@ -1,4 +1,4 @@
-package us.pochaev.jsonapi_wip.converter.to;
+package us.pochaev.jsonapi.v1_0.converter.to;
 
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiObject;
 

@@ -8,8 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiObject;
+import us.pochaev.jsonapi.v1_0.converter.to.JsonApiObjectParser;
 import us.pochaev.jsonapi_wip.converter.annotations.JsonApiId;
-import us.pochaev.jsonapi_wip.converter.to.JsonApiObjectParser;
 
 
 public class JsonApiObjectParserHierarchyTest {

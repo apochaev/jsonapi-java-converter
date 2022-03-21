@@ -1,7 +1,8 @@
-package us.pochaev.jsonapi_wip.converter.to;
+package us.pochaev.jsonapi.v1_0.converter.to;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,10 +10,9 @@ import org.junit.jupiter.api.Test;
 
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiObject;
 import us.pochaev.jsonapi_wip.converter.annotations.JsonApiId;
-import us.pochaev.jsonapi_wip.converter.to.JsonApiObjectParser;
 
 
-public class JsonApiObjectParserNoHierarchyTest {
+public class JsonApiObjectParserTest {
 	static final String TYPE_CUSTOM = "custom";
 
 	class NotJsonApiObject {
@@ -50,6 +50,11 @@ public class JsonApiObjectParserNoHierarchyTest {
 	}
 
 	@Test
+	public void continueHere() {
+		fail("continue here");
+	}
+
+	@Test
 	@DisplayName("When null object then exception")
 	public void whenNullObjectThenException() {
 		Object obj = null;
@@ -64,6 +69,17 @@ public class JsonApiObjectParserNoHierarchyTest {
 		Exception e = assertThrows(IllegalStateException.class, () ->
 			JsonApiObjectParser.parseType(obj));
 		assertEquals("Class must be annotated with @JsonApiObject", e.getMessage());
+	}
+
+	@Test
+	@DisplayName("When empty value then simple name type")
+	public void whenEmptyVaueThenSimpleNameType() {
+		EmptyType obj = new EmptyType();
+		obj.id = "unique";
+
+		Exception e = assertThrows(IllegalArgumentException.class, () ->
+			JsonApiObjectParser.parseType(obj));
+		assertEquals("@JsonApiObject value may not be blank", e.getMessage());
 	}
 
 	@Test
@@ -104,16 +120,7 @@ public class JsonApiObjectParserNoHierarchyTest {
 		assertEquals(DefaultType.class.getSimpleName(), type);
 	}
 
-	@Test
-	@DisplayName("When empty value then simple name type")
-	public void whenEmptyVaueThenSimpleNameType() {
-		EmptyType obj = new EmptyType();
-		obj.id = "unique";
 
-		String type = JsonApiObjectParser.parseType(obj);
-
-		assertEquals(EmptyType.class.getSimpleName(), type);
-	}
 
 	@Test
 	@DisplayName("When custom value then custom type")
