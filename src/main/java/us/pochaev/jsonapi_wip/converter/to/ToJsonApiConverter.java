@@ -18,7 +18,7 @@ public class ToJsonApiConverter {
 	public static String convert(Object obj) {
 		Objects.requireNonNull(obj);
 
-		String type = JsonApiObjectParser.parseType(obj);
+		String type = null;//JsonApiObjectParser.parseType(obj);
 		String id = null;
 		Map<String, Object> attributeMap = null;
 

@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import us.pochaev.jsonapi_wip.converter.parser.JsonApiIdFieldFinder;
 import us.pochaev.jsonapi_wip.converter.parser.test.id.Constants;
 import us.pochaev.jsonapi_wip.converter.parser.test.id.None;
 import us.pochaev.jsonapi_wip.converter.parser.test.id.PrivateField;

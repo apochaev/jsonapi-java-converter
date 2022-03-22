@@ -1,6 +1,10 @@
 package us.pochaev.jsonapi.v1_0.converter.to;
 
+import java.util.Objects;
+
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiObject;
+import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiSpecificationException;
+import us.pochaev.jsonapi.v1_0.converter.to.membername.MemberNameFactory;
 
 /**
  * Parser that determines JSON API Object type using {@link JsonApiObject} annotation.
@@ -19,27 +23,43 @@ class JsonApiObjectParser {
 	 * @return JSON API Object type.
 	 */
 	static String parseType(Object obj) {
-		JsonApiObject jsonApiObject = obj.getClass().getAnnotation(JsonApiObject.class);
-		if (jsonApiObject == null)
-			throw new IllegalStateException(
-					"Class must be annotated with @" + JsonApiObject.class.getSimpleName());
+		Objects.requireNonNull(obj);
+
+		Class<? extends Object> objClass = obj.getClass();
+
+		String type = getJsonApiObjectType(objClass);
+
+		try {
+			return MemberNameFactory.create(type);
+		} catch (JsonApiSpecificationException e) {
+			String message = objClass.getCanonicalName() +
+					" @" + JsonApiObject.class.getSimpleName() +
+					" value must be valid.";
+
+
+			throw new IllegalArgumentException(message, e);
+		}
+	}
+
+	private static String getJsonApiObjectType(Class<? extends Object> objClass) {
+		JsonApiObject jsonApiObject = objClass.getAnnotation(JsonApiObject.class);
+		if (jsonApiObject == null) {
+			throw mustBeAnnotatedException(objClass);
+		}
 
 		String type = jsonApiObject.value();
-		if (type == null)
-			throw new IllegalArgumentException(
-					"@" + JsonApiObject.class.getSimpleName() + " value may not be null");
+		if (JsonApiObject.DEFAULT_VALUE.equals(type)) {
+			type = objClass.getSimpleName();
+		}
 
-		if (type.equals(JsonApiObject.DEFAULT_VALUE))
-			return obj.getClass().getSimpleName();
+		return type;
+	}
 
-		if (type.length() != type.trim().length())
-			throw new IllegalArgumentException(
-					"@" + JsonApiObject.class.getSimpleName() + " value may not start or end with a space");
-
-		if (type.trim().length() > 0)
-			return type;
-
-		throw new IllegalArgumentException(
-				"@" + JsonApiObject.class.getSimpleName() + " value may not be blank");
+	private static IllegalStateException mustBeAnnotatedException(Class<? extends Object> objClass) {
+		return new IllegalStateException(
+						objClass.getCanonicalName() +
+						" must be annotated with @" +
+						JsonApiObject.class.getSimpleName() +
+						".");
 	}
 }

@@ -37,7 +37,7 @@ import us.pochaev.jsonapi_wip.converter.annotations.JsonApiIgnore;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface JsonApiObject {
-	final static String DEFAULT_VALUE = "";
+	final static String DEFAULT_VALUE = "${this.getClass().getSimpleName()}";
 	/**
 	 * Type of the JSON API resource object.
 	 * @return type name

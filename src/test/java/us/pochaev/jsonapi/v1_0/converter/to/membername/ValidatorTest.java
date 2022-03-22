@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -102,9 +103,8 @@ class ValidatorTest {
 	}
 
 
-
-	@Test
-	@DisplayName("Performance test") //TODO document findings and remove
+	@Disabled("Document findings and remove test") //TODO Document findings and remove test
+	@Test @DisplayName("Performance test")
  	void test() {
 		String test1 = RandomStringUtils.randomAlphabetic(20).toLowerCase();
 		String test2 = RandomStringUtils.randomAlphabetic(19).toLowerCase() + "Ж";

@@ -1,18 +1,16 @@
-package us.pochaev.jsonapi_wip.converter.to;
+package us.pochaev.jsonapi.v1_0.converter.to;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiObject;
-import us.pochaev.jsonapi.v1_0.converter.to.JsonApiObjectParser;
 import us.pochaev.jsonapi_wip.converter.annotations.JsonApiId;
 
 
-public class JsonApiObjectParserHierarchyTest {
+public class JsonApiObjectParserClassHierarchyTest {
 	static final String TYPE_CHILD = "child";
 
 	@JsonApiObject
@@ -28,30 +26,22 @@ public class JsonApiObjectParserHierarchyTest {
 	class NotJsonApiChild extends Parent {
 	}
 
-	private JsonApiObjectParser jsonApiObjectParser;
-
-	@BeforeEach
-	public void beforeEach() {
-		jsonApiObjectParser = new JsonApiObjectParser();
-	}
-
-	@Test
-	@DisplayName("When @JsonApiObject parent and @JsonApiObject child then child type")
+	@Test @DisplayName("WHEN @JsonApiObject child and @JsonApiObject parent THEN child type")
 	public void whenAnnotatedChildClassThenConvertAsChildType() throws Exception {
 		Child obj = new Child();
 		obj.id = "unique";
 
-		String type = jsonApiObjectParser.parseType(obj);
+		String type = JsonApiObjectParser.parseType(obj);
 
 		assertEquals(TYPE_CHILD, type);
 	}
 
-	@Test
-	@DisplayName("When @JsonApiObject parent and NOT @JsonApiObject child then exception")
+	@Test @DisplayName("WHEN NOT @JsonApiObject child and @JsonApiObject parent THEN exception")
 	public void whenNotJsonApiObjectChildThenException() {
 		Object obj = new NotJsonApiChild();
 		Exception e = assertThrows(IllegalStateException.class, () ->
-			jsonApiObjectParser.parseType(obj));
-		assertEquals("Class must be annotated with @JsonApiObject", e.getMessage());
+			JsonApiObjectParser.parseType(obj));
+		assertEquals(obj.getClass().getCanonicalName() + " must be annotated with @JsonApiObject.",
+				e.getMessage());
 	}
 }
