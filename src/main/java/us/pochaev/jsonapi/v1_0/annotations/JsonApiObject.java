@@ -5,15 +5,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import us.pochaev.jsonapi_wip.converter.annotations.JsonApiId;
 import us.pochaev.jsonapi_wip.converter.annotations.JsonApiIgnore;
 
 /**
  * Marker annotation that is used to define a class that can be converted to
- * a resource object or resource identifier object as defined by https://jsonapi.org/format/1.0/
+ * a resource object or resource identifier object as defined by <a href="https://jsonapi.org">JSON API Specification</a>
  *
- * Default value "" indicates that the simple class name {@link Class#getSimpleName()} is used as the resource object type.
- * Value can be changed to a non empty value.
+ * Default value indicates that the simple class name {@link Class#getSimpleName()} is used as the resource object type.
+ * Value can be changed to a non empty value that should be compliant with <a href="https://jsonapi.org/format/1.0/#document-member-names">JSON API Memeber Names</a>
  *
  * Annotated class must have a public property annotated with {@link JsonApiId},
  * otherwise a {@link RuntimeException} should occur during conversion.
@@ -33,6 +32,7 @@ import us.pochaev.jsonapi_wip.converter.annotations.JsonApiIgnore;
  *
  * @author a.pochaev@gmail.com
  *
+ * TODO update JavaDoc once the functionality is locked in.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

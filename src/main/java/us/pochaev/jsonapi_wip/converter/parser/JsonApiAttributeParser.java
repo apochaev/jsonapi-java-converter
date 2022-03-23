@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import us.pochaev.jsonapi.v1_0.annotations.JsonApiId;
 import us.pochaev.jsonapi_wip.converter.annotations.JsonApiAttribute;
-import us.pochaev.jsonapi_wip.converter.annotations.JsonApiId;
 import us.pochaev.jsonapi_wip.converter.annotations.JsonApiIgnore;
 
 public class JsonApiAttributeParser {

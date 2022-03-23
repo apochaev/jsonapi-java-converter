@@ -1,4 +1,4 @@
-package us.pochaev.jsonapi_wip.converter.parser.test.id;
+package us.pochaev.jsonapi.v1_0.converter.to.id_parser;
 
 public class Constants {
 
