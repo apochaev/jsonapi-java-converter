@@ -3,8 +3,6 @@ package us.pochaev.jsonapi.v1_0.converter.to;
 import static org.reflections.ReflectionUtils.withAnnotation;
 import static org.reflections.ReflectionUtils.withParameters;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -48,27 +46,15 @@ class JsonApiIdParser {
 						return String.valueOf(
 								 getObjectValue(obj, field));
 					} else {
-						try {
-							//TODO need to find read method manually. Property descriptor requires set too.
-							PropertyDescriptor pd = new PropertyDescriptor(field.getName(), obj.getClass());
-							Method readMethod = pd.getReadMethod();
+							Method readMethod = findGetter(obj, field);
 							if (readMethod != null) {
 								if (readMethod.canAccess(obj)) {
-									try {
-										return String.valueOf(
-												readMethod.invoke(obj, new Object[0]));
-									} catch (IllegalAccessException e) {
-										throw new RuntimeException(e);
-									} catch (IllegalArgumentException e) {
-										throw new RuntimeException(e);
-									} catch (InvocationTargetException e) {
-										throw new RuntimeException(e);
-									}
+
+									return String.valueOf(
+											getObjectValue(obj, readMethod));
 								}
 							}
-						} catch (IntrospectionException e) {
-							throw new RuntimeException(e);
-						}
+
 						throw mustBeAccessible(field);
 					}
 				}
@@ -83,11 +69,50 @@ class JsonApiIdParser {
 	}
 
 
+	private static Method findGetter(Object obj, Field field) {
+		Class<?> fieldType = field.getType();
 
-	private static char[] getObjectValue(Object obj, Field field) {
-		// TODO Auto-generated method stub
+		String prefix = getPrefix(fieldType);
+		String name = prefix + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
+
+		for (Method method : field.getDeclaringClass().getMethods()) {
+
+			if (method.getName().equals(name) &&
+				method.canAccess(obj) &&
+				method.getParameterCount() == 0 &&
+				method.getReturnType().equals(fieldType)) {
+					return method;
+			}
+		}
+
 		return null;
 	}
+
+
+	private static String getPrefix(Class<?> fieldType) {
+		String prefix = "get";
+		if (boolean.class.equals(fieldType) || Boolean.class.equals(fieldType)) {
+			prefix = "is";
+		}
+		return prefix;
+	}
+
+	private static Object getObjectValue(Object obj, Field field) {
+		try {
+			return field.get(obj);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static Object getObjectValue(Object obj, Method readMethod) {
+		try {
+			return readMethod.invoke(obj, new Object[0]);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 
 	private static Set<Field> findFieldsWithAnnotation(Object obj, Class<JsonApiId> jsonApiIdClass) {
 		return ReflectionUtils.getAllFields(obj.getClass(),

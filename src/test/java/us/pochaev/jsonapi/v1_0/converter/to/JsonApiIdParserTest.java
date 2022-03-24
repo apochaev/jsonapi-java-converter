@@ -75,5 +75,6 @@ class JsonApiIdParserTest { //TODO make sure lomboc @Data / @Value objects work.
 		assertEquals(Constants.ID, id);
 	}
 
+	//TODO boolean, Boolean, other primitive other non primitive
 
 }
