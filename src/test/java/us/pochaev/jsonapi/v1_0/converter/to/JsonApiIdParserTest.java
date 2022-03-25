@@ -22,7 +22,7 @@ class JsonApiIdParserTest { //TODO make sure lomboc @Data / @Value objects work.
 
 		IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
 			JsonApiIdParser.parse(obj));
-		assertEquals(obj.getClass().getCanonicalName() + " class hierarchy must have a public property annotated with @JsonApiId",
+		assertEquals(obj.getClass().getCanonicalName() + " class hierarchy must have an accessible property annotated with @JsonApiId",
 				ex.getMessage());
 	}
 
