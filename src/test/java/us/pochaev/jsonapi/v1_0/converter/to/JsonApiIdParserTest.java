@@ -10,11 +10,17 @@ import us.pochaev.jsonapi.v1_0.converter.to.id_parser.Constants;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.None;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.ParentPublicField;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.PrivateAnnotatedField;
+import us.pochaev.jsonapi.v1_0.converter.to.id_parser.PrivateAnnotatedFieldPrivateGetter;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.PrivateAnnotatedFieldPublicGetter;
+import us.pochaev.jsonapi.v1_0.converter.to.id_parser.PublicAnnotatedFieldPrivateGetter;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.PublicField;
+import us.pochaev.jsonapi.v1_0.converter.to.id_parser.TwoAnnotatedFields;
+import us.pochaev.jsonapi.v1_0.converter.to.id_parser.TwoAnnotatedMethods;
 import us.pochaev.jsonapi_wip.converter.parser.test.id.ProtectedAnnotatedFieldPublicGetter;
 
-class JsonApiIdParserTest { //TODO make sure lomboc @Data / @Value objects work.
+class JsonApiIdParserTest {
+	//TODO make sure lomboc @Data / @Value objects work.
+	//TODO extract ReflectionUtils
 
 	@Test @DisplayName("WHEN none THEN exception")
 	public void whenNone() {
@@ -25,6 +31,27 @@ class JsonApiIdParserTest { //TODO make sure lomboc @Data / @Value objects work.
 		assertEquals(obj.getClass().getCanonicalName() + " class hierarchy must have an accessible property annotated with @JsonApiId",
 				ex.getMessage());
 	}
+
+	@Test @DisplayName("WHEN more then one field THEN exception")
+	public void whenMoreThenOneAnnotatedField() {
+		Object obj = new TwoAnnotatedFields();
+
+		IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
+			JsonApiIdParser.parse(obj));
+		assertEquals(obj.getClass().getCanonicalName() + " class hierarchy must have a single accessible property annotated with @JsonApiId",
+				ex.getMessage());
+	}
+
+	@Test @DisplayName("WHEN more then one method THEN exception")
+	public void whenMoreThenOneAnnotatedMethod() {
+		Object obj = new TwoAnnotatedMethods();
+
+		IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
+			JsonApiIdParser.parse(obj));
+		assertEquals(obj.getClass().getCanonicalName() + " class hierarchy must have a single accessible property annotated with @JsonApiId",
+				ex.getMessage());
+	}
+
 
 	@Test @DisplayName("WHEN annotated accessible field THEN return field value")
 	public void whenAnnotatedAccessibleFieldThenReturnValue() {
@@ -62,8 +89,25 @@ class JsonApiIdParserTest { //TODO make sure lomboc @Data / @Value objects work.
 		assertEquals(Constants.ID, id);
 	}
 
+	@Test
+	@DisplayName("WHEN not accessible annotated field not accessible getter THEN exception")
+	public void whenNotAccessibleAnnotatedFieldNotAccessibleGetterThenException() {
+		Object obj = new PrivateAnnotatedFieldPrivateGetter();
 
+		IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
+			JsonApiIdParser.parse(obj));
+		assertEquals(obj.getClass().getCanonicalName() + "#id field annotated with @JsonApiId must be accessible.",
+				ex.getMessage());
+	}
 
+	@Test
+	@DisplayName("WHEN accessible annotated field not accessible getter THEN return field value")
+	public void whenAccessibleAnnotatedFieldNotAccessibleGetterThenException() {
+		Object obj = new PublicAnnotatedFieldPrivateGetter();
+
+		String id = JsonApiIdParser.parse(obj);
+		assertEquals(Constants.ID, id);
+	}
 
 
 	@Test

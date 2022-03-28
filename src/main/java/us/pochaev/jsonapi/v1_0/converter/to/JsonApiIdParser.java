@@ -1,15 +1,15 @@
 package us.pochaev.jsonapi.v1_0.converter.to;
 
-import static org.reflections.ReflectionUtils.withAnnotation;
-import static org.reflections.ReflectionUtils.withParameters;
+
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
-import org.reflections.ReflectionUtils;
-
+import us.pochaev.jsonapi.reflection.ReflectionUtils;
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiId;
 import us.pochaev.jsonapi_wip.converter.annotations.JsonApiAttribute;
 import us.pochaev.jsonapi_wip.converter.annotations.JsonApiIgnore;
@@ -19,6 +19,8 @@ class JsonApiIdParser {
 	/**
 	 * Returns value of JSON API Id
 	 *
+	 * Inspects all public fields and methods to find one annotated with {@link JsonApiId}
+	 *
 	 * @param obj JsonApiObject
 	 * @return
 	 * TODO document
@@ -26,13 +28,18 @@ class JsonApiIdParser {
 	public static String parse(Object obj) {
 
 		Class<JsonApiId> jsonApiIdClass = JsonApiId.class;
-		Set<Field> fields = findFieldsWithAnnotation(obj, jsonApiIdClass);
+
+		Collection<Field> fields = ReflectionUtils.getAnnotatedInstanceFields(jsonApiIdClass, obj.getClass());
+
+
+
+		obj.getClass().getMethods();
+
+
 
 //		Set<Method> getters = findGetters()
 
-		Set<Method> getters = ReflectionUtils.getAllMethods(obj.getClass(),
-			      withParameters(new Class<?>[0]),
-			      withAnnotation(jsonApiIdClass)); //TODO remove dependency
+		Set<Method> getters = new HashSet<>();
 
 
 
@@ -53,9 +60,10 @@ class JsonApiIdParser {
 									return String.valueOf(
 											getObjectValue(obj, readMethod));
 								}
+								throw getterMustBeAccessible(readMethod);
 							}
 
-						throw mustBeAccessible(field);
+						throw fieldMustBeAccessible(field);
 					}
 				}
 			case 0: throw mustHaveOne(obj.getClass());
@@ -78,7 +86,6 @@ class JsonApiIdParser {
 		for (Method method : field.getDeclaringClass().getMethods()) {
 
 			if (method.getName().equals(name) &&
-				method.canAccess(obj) &&
 				method.getParameterCount() == 0 &&
 				method.getReturnType().equals(fieldType)) {
 					return method;
@@ -113,11 +120,6 @@ class JsonApiIdParser {
 		}
 	}
 
-
-	private static Set<Field> findFieldsWithAnnotation(Object obj, Class<JsonApiId> jsonApiIdClass) {
-		return ReflectionUtils.getAllFields(obj.getClass(),
-				withAnnotation(jsonApiIdClass));
-	}
 
 	private static Field findIdField(Object obj, Class<?> cls, Field idField) {
 		Field[] fields = cls.getDeclaredFields();
@@ -171,7 +173,12 @@ class JsonApiIdParser {
 		}
 	}
 
-	private static RuntimeException mustBeAccessible(Field field) {
+	private static RuntimeException getterMustBeAccessible(Method method) {
+		return new IllegalStateException(
+				method.getDeclaringClass().getCanonicalName() + "#" + method.getName() + " field annotated with @" + JsonApiId.class.getSimpleName() + " or its getter must be accessible.");
+	}
+
+	private static RuntimeException fieldMustBeAccessible(Field field) {
 		return new IllegalStateException(
 				field.getDeclaringClass().getCanonicalName() + "#" + field.getName() + " field annotated with @" + JsonApiId.class.getSimpleName() + " must be accessible.");
 	}
