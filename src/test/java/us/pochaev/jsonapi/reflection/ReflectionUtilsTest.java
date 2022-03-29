@@ -19,14 +19,14 @@ class ReflectionUtilsTest {
 
 	@Test @DisplayName("WHEN getAnnotatedFields none THEN empty collection")
 	void none() {
-		Object obj = new TestNoneParent();
+		Object obj = new TestNone();
 		Collection<Field> annotatedFields = ReflectionUtils.getAnnotatedInstanceFields(TestMemberAnnotation.class, obj.getClass());
 		assertTrue(annotatedFields.isEmpty());
 	}
 
 	@Test @DisplayName("WHEN getAnnotatedFields most THEN non empty collection")
 	void test2() {
-		Object obj = new TestMostParent();
+		Object obj = new TestMost();
 		Collection<Field> annotatedFields = ReflectionUtils.getAnnotatedInstanceFields(TestMemberAnnotation.class, obj.getClass());
 		assertEquals(FIELD_COUNT_PUBLIC, annotatedFields.size());
 
@@ -72,7 +72,7 @@ class ReflectionUtilsTest {
 				"publicField"));
 	}
 
-	@Test @DisplayName("WHEN getAnnotatedFields most parent most child THEN public field ?")
+	@Test @DisplayName("WHEN getAnnotatedFields most parent most child THEN child public field only")
 	void mostParentMostChildPublicField() throws IllegalArgumentException, IllegalAccessException {
 		TestMostParentMostChild obj = new TestMostParentMostChild();
 		Collection<Field> annotatedFields = ReflectionUtils.getAnnotatedInstanceFields(TestMemberAnnotation.class, obj.getClass());
@@ -91,6 +91,27 @@ class ReflectionUtilsTest {
 
 		assertEquals("publicFieldChild", obj.publicField);
 		assertEquals("publicFieldChild", obj.getPublicField());
+	}
+
+	@Test @DisplayName("WHEN getAnnotatedFields most parent most child most grand child THEN grand child public field only")
+	void mostParentMostChildMostGrandChildPublicField() throws IllegalArgumentException, IllegalAccessException {
+		TestMostParentMostChild obj = new TestMostParentMostChildMostGrandChild();
+		Collection<Field> annotatedFields = ReflectionUtils.getAnnotatedInstanceFields(TestMemberAnnotation.class, obj.getClass());
+		assertEquals(1 , annotatedFields.size());
+
+		List<Object> publicFieldValues = annotatedFields
+				.stream()
+				.filter(field -> (field.getName().equals("publicField")))
+				.map(field -> getValue(field, obj))
+				.collect(Collectors.toList());
+
+		assertEquals(1, publicFieldValues.size());
+		assertThat(publicFieldValues, hasItems(
+				"publicFieldGrandChild"));
+
+
+		assertEquals("publicFieldGrandChild", obj.publicField);
+		assertEquals("publicFieldGrandChild", obj.getPublicField());
 	}
 
 	protected Object getValue(Field field, TestMostParentMostChild obj) {

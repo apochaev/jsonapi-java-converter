@@ -1,6 +1,6 @@
 package us.pochaev.jsonapi.reflection;
 
-public class TestMostParent {
+public class TestAllFields {
 	@TestMemberAnnotation
 	private static Object privateStaticField;
 
@@ -40,7 +40,7 @@ public class TestMostParent {
 	protected Object protectedField;
 
 	@TestMemberAnnotation
-	public Object publicField = "publicFieldParent";
+	public Object publicField = "publicField" + this.getClass().getSimpleName();
 
 	@TestMemberAnnotation
 	Object packageField;
@@ -63,25 +63,5 @@ public class TestMostParent {
 	@TestMemberAnnotation
 	Object getPackageField() {
 		return packageField;
-	}
-
-	@TestMemberAnnotation
-	private void somePrivateMethod() {
-
-	}
-
-	@TestMemberAnnotation
-	protected void someProtectedMethod() {
-
-	}
-
-	@TestMemberAnnotation
-	public void somePublicMethod() {
-
-	}
-
-	@TestMemberAnnotation
-	void somePackageMethod() {
-
 	}
 }

@@ -15,4 +15,8 @@ public class JsonApiResourceObject {
 		this.id = id;
 	}
 
+	public Object getId() {
+		return id == null ? null : id.toString();
+	}
+
 }

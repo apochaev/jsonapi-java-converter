@@ -1,6 +1,6 @@
 package us.pochaev.jsonapi.reflection;
 
-public class TestMostParentMostChild extends TestMost {
+public class TestMostParentMostChildMostGrandChild extends TestMostParentMostChild {
 	@TestMemberAnnotation
 	private static Object privateStaticField;
 
@@ -40,7 +40,7 @@ public class TestMostParentMostChild extends TestMost {
 	protected Object protectedField;
 
 	@TestMemberAnnotation
-	public Object publicField = "publicFieldChild";
+	public Object publicField = "publicFieldGrandChild";
 
 	@TestMemberAnnotation
 	Object packageField;

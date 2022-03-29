@@ -27,6 +27,8 @@ class JsonApiIdParser {
 	 */
 	public static String parse(Object obj) {
 
+		//find any field annotated with @JsonApiId, call public getter if a
+
 		Class<JsonApiId> jsonApiIdClass = JsonApiId.class;
 
 		Collection<Field> fields = ReflectionUtils.getAnnotatedInstanceFields(jsonApiIdClass, obj.getClass());

@@ -1,5 +1,5 @@
 package us.pochaev.jsonapi.reflection;
 
-public class TestNoneParent {
+public class TestNone {
 
 }

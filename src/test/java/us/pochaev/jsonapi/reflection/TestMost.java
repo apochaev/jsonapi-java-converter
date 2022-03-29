@@ -1,6 +1,6 @@
 package us.pochaev.jsonapi.reflection;
 
-public class TestMostParentMostChild extends TestMost {
+public class TestMost {
 	@TestMemberAnnotation
 	private static Object privateStaticField;
 
@@ -40,7 +40,7 @@ public class TestMostParentMostChild extends TestMost {
 	protected Object protectedField;
 
 	@TestMemberAnnotation
-	public Object publicField = "publicFieldChild";
+	public Object publicField = "publicField" + this.getClass().getSimpleName();
 
 	@TestMemberAnnotation
 	Object packageField;
@@ -50,19 +50,16 @@ public class TestMostParentMostChild extends TestMost {
 		return privateField;
 	}
 
-	@Override
 	@TestMemberAnnotation
 	protected Object getProtectedField() {
 		return protectedField;
 	}
 
-	@Override
 	@TestMemberAnnotation
 	public Object getPublicField() {
 		return publicField;
 	}
 
-	@Override
 	@TestMemberAnnotation
 	Object getPackageField() {
 		return packageField;
@@ -73,19 +70,16 @@ public class TestMostParentMostChild extends TestMost {
 
 	}
 
-	@Override
 	@TestMemberAnnotation
 	protected void someProtectedMethod() {
 
 	}
 
-	@Override
 	@TestMemberAnnotation
 	public void somePublicMethod() {
 
 	}
 
-	@Override
 	@TestMemberAnnotation
 	void somePackageMethod() {
 

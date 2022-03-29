@@ -9,12 +9,14 @@ import java.util.Optional;
 
 /**
  * Similar to {@link PropertyDescriptor}
+ * No synthetic or static fields or methods, no abstract classes, no abstract methods.
  *
  * @author a.pochaev@gmail.com
  *
  * TODO update JavaDoc
  */
 public class ValueDescriptor {
+
 	private final Field field;
 	private final Optional<Method> optionalGetter;
 
