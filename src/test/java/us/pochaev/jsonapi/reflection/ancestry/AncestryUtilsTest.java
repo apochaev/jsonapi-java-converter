@@ -19,6 +19,7 @@ public class AncestryUtilsTest {
 		assertThat(ancestry, contains( new Class<?> [] {
 				TestClass.class,
 				Object.class}));
+		assertEquals(Object.class, ancestry.pop());
 	}
 
 	@Test @DisplayName("WHEN getAncestry TestClassChild THEN ancestry.size is 3")
