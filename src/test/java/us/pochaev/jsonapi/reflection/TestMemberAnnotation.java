@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ FIELD, METHOD })
-@interface TestMemberAnnotation {
+public @interface TestMemberAnnotation {
 
 }

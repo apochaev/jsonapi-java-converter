@@ -1,4 +1,4 @@
-package us.pochaev.jsonapi.reflection;
+package us.pochaev.jsonapi.reflection.value;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
@@ -16,24 +16,24 @@ import java.util.Optional;
  * TODO update JavaDoc
  */
 public class ValueDescriptor {
-
+	private final String name;
 	private final Field field;
 	private final Optional<Method> optionalGetter;
 
-
-	public ValueDescriptor(Field field) {
+	public ValueDescriptor(String name, Field field) {
+		this.name = Objects.requireNonNull(name);
 		this.field = Objects.requireNonNull(field);
 		optionalGetter = Optional.empty();
 	}
 
-	public ValueDescriptor(Field field, Method getter) {
+	public ValueDescriptor(String name, Field field, Method getter) {
+		this.name = Objects.requireNonNull(name);
 		this.field = Objects.requireNonNull(field);
 		optionalGetter = Optional.of(getter);
 	}
 
-	public ValueDescriptor(Field field, Optional<Method> optionalGetter) {
-		this.field = field;
-		this.optionalGetter = optionalGetter;
+	public String getName() {
+		return name;
 	}
 
 	public Object getValue(Object obj) {
@@ -60,4 +60,8 @@ public class ValueDescriptor {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "ValueDescriptor [name=" + name + ", field=" + field + ", optionalGetter=" + optionalGetter + "]";
+	}
 }
