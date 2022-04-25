@@ -44,7 +44,18 @@ class ValueUtilsTest {
 		assertEquals("testClassGetter", valueDescriptors.get("testClassGetter").getValue(object));
 		assertEquals("privateTestClassChildField", valueDescriptors.get("privateTestClassField").getValue(object)); //override
 		assertEquals("privateTestClassChildField", valueDescriptors.get("privateTestClassChildField").getValue(object));
+	}
 
+	@Test @DisplayName("WHEN grand child THEN grand, child and parent value descriptors")
+	void test4() {
+		TestClassChild object = new TestClassChild();
+		Map<String, ValueDescriptor> valueDescriptors = ValueUtils.getValueDescriptors(TestMemberAnnotation.class, object);
+
+		assertEquals(3, valueDescriptors.size());
+		assertEquals("testClassGetter", valueDescriptors.get("testClassGetter").getValue(object));
+		assertEquals("privateTestClassChildField", valueDescriptors.get("privateTestClassField").getValue(object)); //override
+		assertEquals("privateTestClassChildField", valueDescriptors.get("privateTestClassChildField").getValue(object));
+		// grand child has method with the annotation that does not conform to getter naming convention
 	}
 
 
