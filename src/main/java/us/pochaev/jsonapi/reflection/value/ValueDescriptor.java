@@ -3,6 +3,7 @@ package us.pochaev.jsonapi.reflection.value;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,6 +31,21 @@ public class ValueDescriptor {
 		this.name = Objects.requireNonNull(name);
 		this.field = Objects.requireNonNull(field);
 		optionalGetter = Optional.of(getter);
+	}
+
+	public ValueDescriptor(String name, Member member) {
+		this.name = Objects.requireNonNull(name);
+		Objects.requireNonNull(member);
+
+		if (member instanceof Field) {
+			field = (Field)member;
+			optionalGetter = Optional.empty();
+		} else if (member instanceof Method) {
+			field = null;
+			optionalGetter = Optional.of((Method)member);
+		} else {
+			throw new IllegalArgumentException("Unsupported member type: " + member.getClass().getName());
+		}
 	}
 
 	public String getName() {

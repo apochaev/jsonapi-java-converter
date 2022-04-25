@@ -7,14 +7,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
@@ -56,9 +54,14 @@ public class ValueUtils {
 				}
 			}
 
-//			List<Method> valueMethods= findAnnotatedMethods(annotationClass, declaredMethods);
+			//TODO refactor all getters in one place, change value descriptor to hold accessor only
 
-			//find annotated methods skip any that are in existing value descriptors, create value descriptors
+			Map<String, Method> valueGetters= findAnnotatedGetters(annotationClass, declaredMethods);
+			for (String propertyName : valueGetters.keySet()) {
+				valueDescriptorMap.put(
+						propertyName,
+						new ValueDescriptor(propertyName, valueGetters.get(propertyName)));
+			}
 		}
 
 		return valueDescriptorMap;
@@ -111,61 +114,27 @@ public class ValueUtils {
 	 * @param methods Method array, must not be null.
 	 * @return Methods matching the criteria
 	 */
-	private static List<Method> findAnnotatedGetters(Class<? extends Annotation> annotationClass, Method[] methods) {
+	private static Map<String, Method> findAnnotatedGetters(Class<? extends Annotation> annotationClass, Method[] methods) {
 		Objects.requireNonNull(annotationClass);
-//		return Arrays
-//				.stream(methods)
-//				.filter(method -> ! method.isSynthetic())
-//				.filter(method -> ! Modifier.isStatic(method.getModifiers()))
-//				.filter(method -> ( method.getAnnotation(annotationClass) != null))
-//				.filter(method -> ( method.getParameterCount() == 0))
-//				.filter(method -> ( isGetterLikeName(method.getName()));
-//
-				return Collections.emptyList();
+		List<Method> methodShortList = Arrays
+			.stream(methods)
+				.filter(method -> ! method.isSynthetic())
+				.filter(method -> ! Modifier.isStatic(method.getModifiers()))
+				.filter(method -> ( method.getAnnotation(annotationClass) != null))
+				.filter(method -> ( method.getParameterCount() == 0))
+			.collect(Collectors.toList());
+
+		Map<String, Method> results = new HashMap<>();
+		for (Method method: methodShortList) {
+			Optional<String> optionalPropertyName = PropertyNameUtils.getOptionalPropertyName(method.getName());
+			if (optionalPropertyName.isPresent()) {
+				results.put(optionalPropertyName.get(), method);
+			}
+		}
+
+		return results;
 
 
-	}
-
-
-
-	/**
-	 * Returns non-static public methods of the objectClass that match getter name convention for the provided field names.
-	 * @param keySet
-	 * @param objectClass
-	 */
-	private static void findValueGetters(Set<String> fieldNames, Class<?> objectClass) {
-//		return Arrays
-//				.stream(objectClass.getme())
-
-	}
-
-
-
-
-//	?Optional<Method> optionalGetter = findGetter(field, cls);
-	/**
-	 * Returns a concrete instance accessible getter
-	 * @param field
-	 * @param cls
-	 * @return
-	 * TODO update JavaDoc
-	 */
-	private static Optional<Method> findGetter(Collection<String> names, Class<? extends Object> cls) {
-//		for (Method method : cls.getMethods()) {
-//			String getterName = createGetterName(field);
-//			if (method.getName().equals(getterName)) {
-//
-//			}
-//
-//			if (isConcreteInstanceMember(method)) {
-//				if (method.isAccessible()) {
-//
-//				}
-//			}
-//		}
-
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	protected static boolean isConcreteInstanceMember(Member member) {
