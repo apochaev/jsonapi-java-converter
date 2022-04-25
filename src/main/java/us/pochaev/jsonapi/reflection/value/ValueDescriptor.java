@@ -63,15 +63,20 @@ public class ValueDescriptor {
 	protected Object getValueFromField(Object obj) {
 		try {
 			return field.get(obj);
-		} catch (IllegalArgumentException | IllegalAccessException e) {
+		} catch (IllegalArgumentException e) {
 			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(obj.getClass().getName() + "#" + field.getName() + " must be public or have a public getter.");
 		}
 	}
 
 	protected Object getValueFromGetter(Object obj) {
+		Method getter = optionalGetter.get();
 		try {
-			return optionalGetter.get().invoke(obj, new Object[0]);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			return getter.invoke(obj, new Object[0]);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(obj.getClass().getName() + "#" + getter.getName() + "() must be public.");
+		} catch (IllegalArgumentException | InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}
 	}

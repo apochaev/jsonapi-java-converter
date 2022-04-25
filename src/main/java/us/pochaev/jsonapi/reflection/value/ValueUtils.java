@@ -49,7 +49,6 @@ public class ValueUtils {
 						vd = new ValueDescriptor(name, field);
 					}
 
-
 					valueDescriptorMap.put(name, vd);
 				}
 			}

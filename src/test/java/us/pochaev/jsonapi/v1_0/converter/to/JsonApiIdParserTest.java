@@ -74,9 +74,9 @@ class JsonApiIdParserTest {
 	public void whenNotAccessibleAnnotatedFieldThenException() {
 		Object obj = new PrivateAnnotatedField();
 
-		IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
+		RuntimeException ex = assertThrows(RuntimeException.class, () ->
 			JsonApiIdParser.parse(obj));
-		assertEquals(obj.getClass().getCanonicalName() + "#id field annotated with @JsonApiId must be accessible.",
+		assertEquals(obj.getClass().getCanonicalName() + "#id must be public or have a public getter.",
 				ex.getMessage());
 	}
 
@@ -94,19 +94,22 @@ class JsonApiIdParserTest {
 	public void whenNotAccessibleAnnotatedFieldNotAccessibleGetterThenException() {
 		Object obj = new PrivateAnnotatedFieldPrivateGetter();
 
-		IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
+		RuntimeException ex = assertThrows(RuntimeException.class, () ->
 			JsonApiIdParser.parse(obj));
-		assertEquals(obj.getClass().getCanonicalName() + "#id field annotated with @JsonApiId must be accessible.",
+		assertEquals(obj.getClass().getCanonicalName() + "#getId() must be public.",
 				ex.getMessage());
 	}
 
 	@Test
-	@DisplayName("WHEN accessible annotated field not accessible getter THEN return field value")
+	@DisplayName("WHEN public field not public getter THEN exception")
 	public void whenAccessibleAnnotatedFieldNotAccessibleGetterThenException() {
 		Object obj = new PublicAnnotatedFieldPrivateGetter();
 
-		String id = JsonApiIdParser.parse(obj);
-		assertEquals(Constants.ID, id);
+		RuntimeException ex = assertThrows(RuntimeException.class, () ->
+			JsonApiIdParser.parse(obj));
+		assertEquals(obj.getClass().getCanonicalName() + "#getId() must be public.",
+			ex.getMessage());
+
 	}
 
 
