@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class ReflectionUtilsTest {
+public class ReflectionUtilsTest {
 
 	private static final int FIELD_COUNT_PUBLIC = 1;
 

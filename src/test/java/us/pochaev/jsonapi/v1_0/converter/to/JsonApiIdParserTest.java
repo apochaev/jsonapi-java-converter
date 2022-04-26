@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.Constants;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.None;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.ParentPublicField;
@@ -26,7 +27,7 @@ class JsonApiIdParserTest {
 	public void whenNone() {
 		Object obj = new None();
 
-		IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
+		Exception ex = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiIdParser.parse(obj));
 		assertEquals(obj.getClass().getCanonicalName() + " class hierarchy must have an accessible property annotated with @JsonApiId",
 				ex.getMessage());
@@ -36,7 +37,7 @@ class JsonApiIdParserTest {
 	public void whenMoreThenOneAnnotatedField() {
 		Object obj = new TwoAnnotatedFields();
 
-		IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
+		Exception ex = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiIdParser.parse(obj));
 		assertEquals(obj.getClass().getCanonicalName() + " class hierarchy must have a single accessible property annotated with @JsonApiId",
 				ex.getMessage());
@@ -46,7 +47,7 @@ class JsonApiIdParserTest {
 	public void whenMoreThenOneAnnotatedMethod() {
 		Object obj = new TwoAnnotatedMethods();
 
-		IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
+		Exception ex = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiIdParser.parse(obj));
 		assertEquals(obj.getClass().getCanonicalName() + " class hierarchy must have a single accessible property annotated with @JsonApiId",
 				ex.getMessage());
@@ -74,7 +75,7 @@ class JsonApiIdParserTest {
 	public void whenNotAccessibleAnnotatedFieldThenException() {
 		Object obj = new PrivateAnnotatedField();
 
-		RuntimeException ex = assertThrows(RuntimeException.class, () ->
+		Exception ex = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiIdParser.parse(obj));
 		assertEquals(obj.getClass().getCanonicalName() + "#id must be public or have a public getter.",
 				ex.getMessage());
@@ -94,7 +95,7 @@ class JsonApiIdParserTest {
 	public void whenNotAccessibleAnnotatedFieldNotAccessibleGetterThenException() {
 		Object obj = new PrivateAnnotatedFieldPrivateGetter();
 
-		RuntimeException ex = assertThrows(RuntimeException.class, () ->
+		Exception ex = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiIdParser.parse(obj));
 		assertEquals(obj.getClass().getCanonicalName() + "#getId() must be public.",
 				ex.getMessage());
@@ -105,13 +106,12 @@ class JsonApiIdParserTest {
 	public void whenAccessibleAnnotatedFieldNotAccessibleGetterThenException() {
 		Object obj = new PublicAnnotatedFieldPrivateGetter();
 
-		RuntimeException ex = assertThrows(RuntimeException.class, () ->
+		Exception ex = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiIdParser.parse(obj));
 		assertEquals(obj.getClass().getCanonicalName() + "#getId() must be public.",
 			ex.getMessage());
 
 	}
-
 
 	@Test
 	@DisplayName("WHEN protected annotated field with public getter THEN return field values")
@@ -123,5 +123,10 @@ class JsonApiIdParserTest {
 	}
 
 	//TODO boolean, Boolean, other primitive other non primitive
+
+	//TODO parent public getter, child override with ignore and another id member
+
+	//TODO field ignored getter not
+	//TODO getter ignored field not
 
 }

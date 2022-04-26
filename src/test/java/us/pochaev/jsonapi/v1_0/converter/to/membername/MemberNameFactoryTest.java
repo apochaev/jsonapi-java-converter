@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiSpecificationException;
+import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiSpecificationViolation;
 
 class MemberNameFactoryTest {
 
@@ -20,6 +20,6 @@ class MemberNameFactoryTest {
 	@Test @DisplayName("WHEN invalid member name THEN exception")
 	void test2() {
 		String name = " abc ";
-		assertThrows(JsonApiSpecificationException.class, () -> MemberNameFactory.create(name));
+		assertThrows(JsonApiSpecificationViolation.class, () -> MemberNameFactory.create(name));
 	}
 }

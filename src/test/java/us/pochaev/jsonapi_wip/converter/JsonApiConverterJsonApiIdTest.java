@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiId;
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiObject;
+import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
 
 public class JsonApiConverterJsonApiIdTest {
 
@@ -66,7 +67,7 @@ public class JsonApiConverterJsonApiIdTest {
 	@DisplayName("When no @JsonApiId then exception")
 	public void whenNoJsonApiIdThenException() {
 		Object obj = new NoJsonApiIdObject();
-		Exception e = assertThrows(IllegalArgumentException.class, () ->
+		Exception e = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiConverter.toJsonApiString(obj));
 		assertEquals("Class hierarchy must have a field annotated with @JsonApiId", e.getMessage());
 	}
@@ -75,7 +76,7 @@ public class JsonApiConverterJsonApiIdTest {
 	@DisplayName("When private @JsonApiId without public getter then exception")
 	public void whenPrivateNoGetterJsonApiIdThenException() {
 		Object obj = new PrivateNoGetterJsonApiIdObject();
-		Exception e = assertThrows(IllegalArgumentException.class, () ->
+		Exception e = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiConverter.toJsonApiString(obj));
 		assertEquals("Class hierarchy must have a field annotated with @JsonApiId", e.getMessage());
 	}
@@ -84,7 +85,7 @@ public class JsonApiConverterJsonApiIdTest {
 	@DisplayName("When more then one @JsonApiId in class then exception")
 	public void whenMoreThenOneJsonApiIdInClassThenException() {
 		Object obj = new TwoJsonApiIdsObject();
-		Exception e = assertThrows(IllegalArgumentException.class, () ->
+		Exception e = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiConverter.toJsonApiString(obj));
 		assertEquals("Class hierarchy must have a single field annotated with @JsonApiId", e.getMessage());
 	}
@@ -93,7 +94,7 @@ public class JsonApiConverterJsonApiIdTest {
 	@DisplayName("When more then one @JsonApiId in class hierarchy then exception")
 	public void whenMoreThenOneJsonApiIdInHierarchyThenException() {
 		Object obj = new TwoJsonApiIdsParentObject();
-		Exception e = assertThrows(IllegalArgumentException.class, () ->
+		Exception e = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiConverter.toJsonApiString(obj));
 		assertEquals("Class hierarchy must have a single field annotated with @JsonApiId", e.getMessage());
 	}
@@ -102,7 +103,7 @@ public class JsonApiConverterJsonApiIdTest {
 	@DisplayName("When @JsonApiId and @JsonApiIgnore then exception")
 	public void whenJsonApiIdAndJsonApiIgnoreThenException() {
 		Object obj = new JsonApiIdIgnoreObject();
-		Exception e = assertThrows(IllegalArgumentException.class, () ->
+		Exception e = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiConverter.toJsonApiString(obj));
 		assertEquals("Field annotated with @JsonApiId may not be annotated with @JsonApiIgnore", e.getMessage());
 	}
@@ -111,7 +112,7 @@ public class JsonApiConverterJsonApiIdTest {
 	@DisplayName("When @JsonApiId and @JsonApiAttribute then exception")
 	public void whenJsonApiIdAndJsonApiAttributeThenException() {
 		Object obj = new JsonApiIdAttributeObject();
-		Exception e = assertThrows(IllegalArgumentException.class, () ->
+		Exception e = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiConverter.toJsonApiString(obj));
 		assertEquals("Field annotated with @JsonApiId may not be annotated with @JsonApiAttribute", e.getMessage());
 	}
@@ -120,7 +121,7 @@ public class JsonApiConverterJsonApiIdTest {
 	@DisplayName("When @JsonApiId and @JsonApiAttribute and @JsonApiIgnore then exception")
 	public void whenJsonApiIdAndJsonApiAttributeAndJsonApiIgnoreThenException() {
 		Object obj = new JsonApiIdAttributeIgnoreObject();
-		Exception e = assertThrows(IllegalArgumentException.class, () ->
+		Exception e = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiConverter.toJsonApiString(obj));
 		assertEquals("Field annotated with @JsonApiId may not be annotated with @JsonApiAttribute", e.getMessage());
 	}

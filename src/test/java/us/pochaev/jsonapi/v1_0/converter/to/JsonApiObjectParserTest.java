@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiId;
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiObject;
+import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
 
 
 public class JsonApiObjectParserTest {
@@ -66,7 +67,7 @@ public class JsonApiObjectParserTest {
 	@Test @DisplayName("WHEN NOT @JsonApiObject THEN exception")
 	public void whenNotJsonApiObjectThenException() {
 		Object obj = new NotJsonApiObject();
-		Exception e = assertThrows(IllegalStateException.class, () ->
+		Exception e = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiObjectParser.parseType(obj));
 		assertEquals(obj.getClass().getCanonicalName() + " must be annotated with @JsonApiObject.",
 				e.getMessage());
@@ -77,7 +78,7 @@ public class JsonApiObjectParserTest {
 		EmptyType obj = new EmptyType();
 		obj.id = "unique";
 
-		Exception e = assertThrows(IllegalArgumentException.class, () ->
+		Exception e = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiObjectParser.parseType(obj));
 		assertEquals(obj.getClass().getCanonicalName() + " @JsonApiObject value must be valid.",
 				e.getMessage());
@@ -88,7 +89,7 @@ public class JsonApiObjectParserTest {
 	@Test @DisplayName("WHEN blank value THEN exception")
 	public void whenBlankValueThenException() {
 		Object obj = new BlankType();
-		Exception e = assertThrows(IllegalArgumentException.class, () ->
+		Exception e = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiObjectParser.parseType(obj));
 		assertEquals(obj.getClass().getCanonicalName() + " @JsonApiObject value must be valid.",
 				e.getMessage());
@@ -99,7 +100,7 @@ public class JsonApiObjectParserTest {
 	@Test @DisplayName("WHEN value starts with a space THEN exception")
 	public void whenValueStartsSpaceThenException() {
 		Object obj = new StartsBlankType();
-		Exception e = assertThrows(IllegalArgumentException.class, () ->
+		Exception e = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiObjectParser.parseType(obj));
 		assertEquals(obj.getClass().getCanonicalName() + " @JsonApiObject value must be valid.",
 				e.getMessage());
@@ -110,7 +111,7 @@ public class JsonApiObjectParserTest {
 	@Test @DisplayName("WHEN value ends with a space THEN exception")
 	public void whenValueEndsSpaceThenException() {
 		Object obj = new EndsBlankType();
-		Exception e = assertThrows(IllegalArgumentException.class, () ->
+		Exception e = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiObjectParser.parseType(obj));
 		assertEquals(obj.getClass().getCanonicalName() + " @JsonApiObject value must be valid.",
 				e.getMessage());
@@ -141,7 +142,7 @@ public class JsonApiObjectParserTest {
 	@Test @DisplayName("WHEN invalid value THEN exception")
 	public void whenInvalidValueThenException() {
 		Object obj = new InvalidType();
-		Exception e = assertThrows(IllegalArgumentException.class, () ->
+		Exception e = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiObjectParser.parseType(obj));
 		assertEquals(obj.getClass().getCanonicalName() + " @JsonApiObject value must be valid.",
 				e.getMessage());

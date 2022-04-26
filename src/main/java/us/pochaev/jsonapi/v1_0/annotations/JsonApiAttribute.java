@@ -1,4 +1,4 @@
-package us.pochaev.jsonapi_wip.converter.annotations;
+package us.pochaev.jsonapi.v1_0.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

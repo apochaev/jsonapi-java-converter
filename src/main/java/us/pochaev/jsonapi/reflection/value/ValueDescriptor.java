@@ -8,6 +8,8 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.Optional;
 
+import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
+
 /**
  * Similar to {@link PropertyDescriptor}
  * No synthetic or static fields or methods, no abstract classes, no abstract methods.
@@ -44,7 +46,7 @@ public class ValueDescriptor {
 			field = null;
 			optionalGetter = Optional.of((Method)member);
 		} else {
-			throw new IllegalArgumentException("Unsupported member type: " + member.getClass().getName());
+			throw new JsonApiParsingException("Unsupported member type: " + member.getClass().getName());
 		}
 	}
 

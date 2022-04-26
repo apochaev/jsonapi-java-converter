@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import us.pochaev.jsonapi_wip.converter.annotations.JsonApiIgnore;
+import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
 
 /**
  * Marker annotation that is used to define a class that can be converted to
@@ -15,7 +15,7 @@ import us.pochaev.jsonapi_wip.converter.annotations.JsonApiIgnore;
  * Value can be changed to a non empty value that should be compliant with <a href="https://jsonapi.org/format/1.0/#document-member-names">JSON API Memeber Names</a>
  *
  * Annotated class must have a public property annotated with {@link JsonApiId},
- * otherwise a {@link RuntimeException} should occur during conversion.
+ * otherwise a {@link JsonApiParsingException} should occur during conversion.
  *
  * All public properties of the class will be converted to resource object attributes,
  * unless the field or getter of the property is annotated with {@link JsonApiIgnore}.
@@ -23,12 +23,12 @@ import us.pochaev.jsonapi_wip.converter.annotations.JsonApiIgnore;
  * Resource object attribute with name @{literal id} is not allowed, therefore
  * the annotated class must not have public property with name {@literal id},
  * unless the property is annotated with {@link JsonApiId} or {@link JsonApiIgnore}.
- * A {@link RuntimeException} should occur during conversion if this condition is not met.
+ * A {@link JsonApiParsingException} should occur during conversion if this condition is not met.
  *
  * Resource object attribute with name @{literal type} is not allowed, therefore
  * the annotated class must not have public property with name {@literal type},
  * unless the property is annotated with {@link JsonApiIgnore}.
- * A {@link RuntimeException} should occur during conversion if this condition is not met.
+ * A {@link JsonApiParsingException} should occur during conversion if this condition is not met.
  *
  * @author a.pochaev@gmail.com
  *

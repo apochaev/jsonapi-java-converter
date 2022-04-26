@@ -3,7 +3,8 @@ package us.pochaev.jsonapi.v1_0.converter.to;
 import java.util.Objects;
 
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiObject;
-import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiSpecificationException;
+import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
+import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiSpecificationViolation;
 import us.pochaev.jsonapi.v1_0.converter.to.membername.MemberNameFactory;
 
 /**
@@ -18,7 +19,7 @@ class JsonApiObjectParser {
 	 * Returns JSON API Object type as declared by the {@link JsonApiObject} annotation of the
 	 * parameter's class.
 	 *
-	 * Will throw {@link IllegalArgumentException} if JSON API Object type can not be determined.
+	 * Will throw {@link JsonApiParsingException} if JSON API Object type can not be determined.
 	 * @param obj
 	 * @return JSON API Object type.
 	 */
@@ -31,13 +32,13 @@ class JsonApiObjectParser {
 
 		try {
 			return MemberNameFactory.create(type);
-		} catch (JsonApiSpecificationException e) {
+		} catch (JsonApiSpecificationViolation e) {
 			String message = objClass.getCanonicalName() +
 					" @" + JsonApiObject.class.getSimpleName() +
 					" value must be valid.";
 
 
-			throw new IllegalArgumentException(message, e);
+			throw new JsonApiParsingException(message, e);
 		}
 	}
 
@@ -55,11 +56,11 @@ class JsonApiObjectParser {
 		return type;
 	}
 
-	private static IllegalStateException mustBeAnnotatedException(Class<? extends Object> objClass) {
-		return new IllegalStateException(
+	private static JsonApiParsingException mustBeAnnotatedException(Class<? extends Object> objClass) {
+		return new JsonApiParsingException(
 						objClass.getCanonicalName() +
-						" must be annotated with @" +
-						JsonApiObject.class.getSimpleName() +
-						".");
+							" must be annotated with @" +
+								JsonApiObject.class.getSimpleName() +
+									".");
 	}
 }

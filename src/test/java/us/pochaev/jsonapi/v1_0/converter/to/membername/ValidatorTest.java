@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiSpecificationException;
+import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiSpecificationViolation;
 
 class ValidatorTest {
 
@@ -40,7 +40,7 @@ class ValidatorTest {
 	@Test @DisplayName("WHEN NOT contains at least one character THEN exception")
 	void test2() {
 		String name = "";
-		JsonApiSpecificationException ex = assertThrows(JsonApiSpecificationException.class, () ->
+		JsonApiSpecificationViolation ex = assertThrows(JsonApiSpecificationViolation.class, () ->
 			Validator.validate(name));
 		assertEquals("Member names MUST contain at least one character.", ex.getMessage());
 		assertEquals("https://jsonapi.org/format/1.0#document-member-names", ex.getSpecUrl());
@@ -64,7 +64,7 @@ class ValidatorTest {
 						String.valueOf(c) +
 						getGloballyAllowedCharacterAsString();
 
-				JsonApiSpecificationException ex = assertThrows(JsonApiSpecificationException.class, () ->
+				JsonApiSpecificationViolation ex = assertThrows(JsonApiSpecificationViolation.class, () ->
 					Validator.validate(name));
 
 				assertEquals("Member names MUST contain only the allowed characters.", ex.getMessage());
@@ -78,7 +78,7 @@ class ValidatorTest {
 						"Ж" +
 						getGloballyAllowedCharacterAsString();
 
-				JsonApiSpecificationException ex = assertThrows(JsonApiSpecificationException.class, () ->
+				JsonApiSpecificationViolation ex = assertThrows(JsonApiSpecificationViolation.class, () ->
 					Validator.validate(name));
 
 				assertEquals("Member names MUST contain only the allowed characters.", ex.getMessage());
@@ -88,7 +88,7 @@ class ValidatorTest {
 
 
 	private void assertThrowsMustStartAndEndWithGloballyAllowedCharacterException(String name) {
-		JsonApiSpecificationException ex = assertThrows(JsonApiSpecificationException.class, () ->
+		JsonApiSpecificationViolation ex = assertThrows(JsonApiSpecificationViolation.class, () ->
 			Validator.validate(name));
 		assertEquals("Member names MUST start and end with a “globally allowed character”.", ex.getMessage());
 		assertEquals("https://jsonapi.org/format/1.0#document-member-names-allowed-characters", ex.getSpecUrl());

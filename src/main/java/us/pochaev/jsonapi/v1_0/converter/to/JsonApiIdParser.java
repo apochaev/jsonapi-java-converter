@@ -7,17 +7,19 @@ import java.util.Collection;
 import us.pochaev.jsonapi.reflection.value.ValueDescriptor;
 import us.pochaev.jsonapi.reflection.value.ValueUtils;
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiId;
+import us.pochaev.jsonapi.v1_0.annotations.JsonApiObject;
+import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
 
 class JsonApiIdParser {
 
 	/**
 	 * Returns value of JSON API Id
 	 *
-	 * Inspects all public fields and methods to find one annotated with {@link JsonApiId}
+	 * Inspects all public fields and getters to find one annotated with {@link JsonApiId}
 	 *
-	 * @param obj JsonApiObject
-	 * @return
-	 * TODO document
+	 * @param obj Instance of a {@link JsonApiObject} annotated class.
+	 * @return String value of the class member annotated with {@link JsonApiId}.
+	 *
 	 */
 	public static String parse(Object obj) {
 
@@ -38,13 +40,17 @@ class JsonApiIdParser {
 		return null;
 	}
 
-	private static RuntimeException mustHaveOne(Class<? extends Object> cls) {
-		return new IllegalStateException(
-				cls.getCanonicalName() + " class hierarchy must have an accessible property annotated with @" + JsonApiId.class.getSimpleName());
+	private static JsonApiParsingException mustHaveOne(Class<? extends Object> cls) {
+		return new JsonApiParsingException (
+				cls.getCanonicalName() +
+					" class hierarchy must have an accessible property annotated with @" +
+							JsonApiId.class.getSimpleName());
 	}
 
-	private static IllegalStateException mustHaveSingle(Class<? extends Object> cls) {
-		return new IllegalStateException(
-				cls.getCanonicalName() + " class hierarchy must have a single accessible property annotated with @" + JsonApiId.class.getSimpleName());
+	private static JsonApiParsingException mustHaveSingle(Class<? extends Object> cls) {
+		return new JsonApiParsingException(
+				cls.getCanonicalName() +
+					" class hierarchy must have a single accessible property annotated with @" +
+						JsonApiId.class.getSimpleName());
 	}
 }

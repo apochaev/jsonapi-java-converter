@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
+
 public class JsonApiIdPropertyFinder {
 
 	public static Optional<String> findIdPropertyName(Class<?> cls) {
@@ -23,7 +25,7 @@ public class JsonApiIdPropertyFinder {
 			try {
 				beanInfo = Introspector.getBeanInfo(cls);
 			} catch (IntrospectionException e) {
-				throw new RuntimeException(e);
+				throw new JsonApiParsingException(e);
 			}
 
 		    PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
@@ -51,20 +53,20 @@ public class JsonApiIdPropertyFinder {
 				if (jsonApiId != null) {
 					JsonApiAttribute jsonApiAttribute = field.getAnnotation(JsonApiAttribute.class);
 					if (jsonApiAttribute !=null) {
-						throw new IllegalArgumentException(
+						throw new JsonApiParsingException(
 								"Field annotated with @"  + JsonApiId.class.getSimpleName() +
 								" may not be annotated with @" + JsonApiAttribute.class.getSimpleName());
 					}
 
 					JsonApiIgnore jsonApiIgnore = field.getAnnotation(JsonApiIgnore.class);
 					if (jsonApiIgnore !=null) {
-						throw new IllegalArgumentException(
+						throw new JsonApiParsingException(
 								"Field annotated with @" + JsonApiId.class.getSimpleName() +
 								" may not be annotated with @" + JsonApiIgnore.class.getSimpleName());
 					}
 
 					if (idFields.size() > 0) {
-						throw new IllegalArgumentException(
+						throw new JsonApiParsingException(
 								"Class hierarchy must have a single field annotated with @" + JsonApiId.class.getSimpleName());
 					}
 					idFields.add(field);
@@ -87,7 +89,7 @@ public class JsonApiIdPropertyFinder {
 		if (idFields.size() == 1)  {
 			return idFields.get(0);
 		}
-		throw new IllegalArgumentException(
+		throw new JsonApiParsingException(
 				"Class hierarchy must have a field annotated with @" +  JsonApiId.class.getSimpleName());
 	}
 */

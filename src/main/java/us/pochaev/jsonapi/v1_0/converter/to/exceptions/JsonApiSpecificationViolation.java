@@ -2,7 +2,7 @@ package us.pochaev.jsonapi.v1_0.converter.to.exceptions;
 
 import us.pochaev.jsonapi_wip.converter.JsonUtils;
 
-public class JsonApiSpecificationException extends RuntimeException {
+public class JsonApiSpecificationViolation extends RuntimeException {
 
 	private static final long serialVersionUID = 3291883509863739451L;
 
@@ -12,7 +12,7 @@ public class JsonApiSpecificationException extends RuntimeException {
 	protected static final String URL_JSONAPI_SPEC_V_1_0 = "https://jsonapi.org/format/1.0";
 
 	/**
-	 * URL of the relevant specification section. Defaults to {@link JsonApiSpecificationException#URL_JSONAPI_SPEC_V_1_0}.
+	 * URL of the relevant specification section. Defaults to {@link JsonApiSpecificationViolation#URL_JSONAPI_SPEC_V_1_0}.
 	 */
 	private final String specUrl;
 
@@ -21,7 +21,7 @@ public class JsonApiSpecificationException extends RuntimeException {
 	 *
 	 * @param message Details of the specification violation. For example: <i>Member names MUST contain at least one character</i>.
 	 */
-	public JsonApiSpecificationException(String message) {
+	public JsonApiSpecificationViolation(String message) {
 		super(message);
 		specUrl = URL_JSONAPI_SPEC_V_1_0;
 	}
@@ -29,10 +29,10 @@ public class JsonApiSpecificationException extends RuntimeException {
 	/**
 	 * Creates an exception with the given message and URL of the JSON API specification version 1.0 with the given anchor.
 	 * @param message Details of the specification violation. For example: <i>Member names MUST contain at least one character</i>.
-	 * @param anchor  Anchor name. For example: <i>document-member-names</i> anchor name results in {@link JsonApiSpecificationException#specUrl}
+	 * @param anchor  Anchor name. For example: <i>document-member-names</i> anchor name results in {@link JsonApiSpecificationViolation#specUrl}
 	 * value being set to <i>https://jsonapi.org/format/1.0/#document-member-names</i>.
 	 */
-	public JsonApiSpecificationException(String message, String anchor) {
+	public JsonApiSpecificationViolation(String message, String anchor) {
 		super(message);
 
 		if (anchor != null && anchor.trim().length() > 0) {
@@ -43,7 +43,7 @@ public class JsonApiSpecificationException extends RuntimeException {
 	}
 
 	/**
-	 * Returns URL of the relevant specification section. Defaults to {@link JsonApiSpecificationException#URL_JSONAPI_SPEC_V_1_0}.
+	 * Returns URL of the relevant specification section. Defaults to {@link JsonApiSpecificationViolation#URL_JSONAPI_SPEC_V_1_0}.
 	 * @return URL of the relevant specification section. For example: <i><a href="https://jsonapi.org/format/1.0/#document-member-names">https://jsonapi.org/format/1.0/#document-member-names</a></i>
 	 */
 	public String getSpecUrl() {

@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import us.pochaev.jsonapi.reflection.ancestry.AncestryUtils;
 import us.pochaev.jsonapi.reflection.property.PropertyNameUtils;
+import us.pochaev.jsonapi.v1_0.annotations.JsonApiIgnore;
 
 public class ValueUtils {
 
@@ -90,7 +91,8 @@ public class ValueUtils {
 	}
 
 	/**
-	 * Returns non-synthetic non-static fields annotated with the given annotation class contained in the fields array.
+	 * Returns non-synthetic non-static fields annotated with the given annotation class and
+	 * not annotated with {@link JsonApiIgnore}, contained in the fields array.
 	 *
 	 * @param annotationClass Annotation class, must not be null.
 	 * @param fields Field array, must not be null.
@@ -102,12 +104,15 @@ public class ValueUtils {
 			.stream(fields)
 			.filter(field -> ! field.isSynthetic())
 			.filter(field -> ! Modifier.isStatic(field.getModifiers()))
+			.filter(field -> (field.getAnnotation(JsonApiIgnore.class) == null))
 			.filter(field -> (field.getAnnotation(annotationClass) != null))
 			.collect(Collectors.toList());
 	}
 
 	/**
-	 * Returns public non-synthetic, non-static methods following getter naming convention and annotated with the given annotation class contained in the fields array.
+	 * Returns public non-synthetic, non-static methods following getter naming convention and
+	 * annotated with the given annotation class and
+	 * not annotated with {@link JsonApiIgnore}, contained in the fields array.
 	 *
 	 * @param annotationClass Annotation class, must not be null.
 	 * @param methods Method array, must not be null.
@@ -119,6 +124,7 @@ public class ValueUtils {
 			.stream(methods)
 				.filter(method -> ! method.isSynthetic())
 				.filter(method -> ! Modifier.isStatic(method.getModifiers()))
+				.filter(method -> ( method.getAnnotation(JsonApiIgnore.class) == null))
 				.filter(method -> ( method.getAnnotation(annotationClass) != null))
 				.filter(method -> ( method.getParameterCount() == 0))
 			.collect(Collectors.toList());

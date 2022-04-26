@@ -9,7 +9,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import us.pochaev.jsonapi_wip.converter.annotations.JsonApiIgnore;
+import us.pochaev.jsonapi.v1_0.annotations.JsonApiIgnore;
+import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
 
 public class ToJsonApiConverter {
 
@@ -52,7 +53,7 @@ public class ToJsonApiConverter {
 			field.setAccessible(true);
 			return field.get(obj);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw new JsonApiParsingException(e);
 		}
 	}
 
@@ -94,7 +95,7 @@ public class ToJsonApiConverter {
 	    try {
 			return mapper.writeValueAsString(user);
 		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
+			throw new JsonApiParsingException(e);
 		}
 	}
 
@@ -104,7 +105,7 @@ public class ToJsonApiConverter {
 			Object value= idField.get(obj);
 			return value == null ? null : value.toString();
 		} catch (IllegalArgumentException | IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw new JsonApiParsingException(e);
 		}
 	}
 

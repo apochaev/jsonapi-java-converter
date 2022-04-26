@@ -6,9 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import us.pochaev.jsonapi.v1_0.annotations.JsonApiAttribute;
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiId;
-import us.pochaev.jsonapi_wip.converter.annotations.JsonApiAttribute;
-import us.pochaev.jsonapi_wip.converter.annotations.JsonApiIgnore;
+import us.pochaev.jsonapi.v1_0.annotations.JsonApiIgnore;
+import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
 
 public class JsonApiAttributeParser {
 
@@ -49,14 +50,14 @@ public class JsonApiAttributeParser {
 	}
 
 	private static void validateNotExists(AttributeData idAttribute) {
-		throw new IllegalStateException(
+		throw new JsonApiParsingException(
 				"Class hierarchy must have a single field annotated with @" + JsonApiId.class.getSimpleName());
 	}
 
 	private static void validateNotJsonApiIgnore(Field field) {
 		JsonApiIgnore jsonApiIgnore = field.getAnnotation(JsonApiIgnore.class);
 		if (jsonApiIgnore !=null) {
-			throw new IllegalStateException(
+			throw new JsonApiParsingException(
 					"Field annotated with @" + JsonApiId.class.getSimpleName() +
 					" may not be annotated with @" + JsonApiIgnore.class.getSimpleName());
 		}
@@ -65,7 +66,7 @@ public class JsonApiAttributeParser {
 	private static void validateNotJsonApiAttribute(Field field) {
 		JsonApiAttribute jsonApiAttribute = field.getAnnotation(JsonApiAttribute.class);
 		if (jsonApiAttribute != null) {
-			throw new IllegalStateException(
+			throw new JsonApiParsingException(
 					"Field annotated with @"  + JsonApiId.class.getSimpleName() +
 					" may not be annotated with @" + JsonApiAttribute.class.getSimpleName());
 		}
@@ -99,7 +100,7 @@ public class JsonApiAttributeParser {
 					validateNotJsonApiIgnore(field);
 
 					if (idFields.size() > 0) {
-						throw new IllegalArgumentException(
+						throw new JsonApiParsingException(
 								"Class hierarchy must have a single field annotated with @" + JsonApiId.class.getSimpleName());
 					}
 					idFields.add(field);

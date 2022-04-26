@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiId;
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiObject;
+import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
 
 
 public class JsonApiObjectParserClassHierarchyTest {
@@ -39,7 +40,7 @@ public class JsonApiObjectParserClassHierarchyTest {
 	@Test @DisplayName("WHEN NOT @JsonApiObject child and @JsonApiObject parent THEN exception")
 	public void whenNotJsonApiObjectChildThenException() {
 		Object obj = new NotJsonApiChild();
-		Exception e = assertThrows(IllegalStateException.class, () ->
+		Exception e = assertThrows(JsonApiParsingException.class, () ->
 			JsonApiObjectParser.parseType(obj));
 		assertEquals(obj.getClass().getCanonicalName() + " must be annotated with @JsonApiObject.",
 				e.getMessage());
