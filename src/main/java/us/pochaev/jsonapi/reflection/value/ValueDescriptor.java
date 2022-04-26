@@ -66,9 +66,10 @@ public class ValueDescriptor {
 		try {
 			return field.get(obj);
 		} catch (IllegalArgumentException e) {
-			throw new RuntimeException(e);
+			throw new JsonApiParsingException(e);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(obj.getClass().getName() + "#" + field.getName() + " must be public or have a public getter.");
+			throw new JsonApiParsingException(
+					obj.getClass().getName() + "#" + field.getName() + " must be public or have a public getter.");
 		}
 	}
 
@@ -77,9 +78,10 @@ public class ValueDescriptor {
 		try {
 			return getter.invoke(obj, new Object[0]);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(obj.getClass().getName() + "#" + getter.getName() + "() must be public.");
+			throw new JsonApiParsingException(
+					obj.getClass().getName() + "#" + getter.getName() + "() must be public.");
 		} catch (IllegalArgumentException | InvocationTargetException e) {
-			throw new RuntimeException(e);
+			throw new JsonApiParsingException(e);
 		}
 	}
 

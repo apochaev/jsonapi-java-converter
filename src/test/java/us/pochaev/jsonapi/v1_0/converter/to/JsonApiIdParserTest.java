@@ -19,7 +19,7 @@ import us.pochaev.jsonapi.v1_0.converter.to.id_parser.TwoAnnotatedFields;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.TwoAnnotatedMethods;
 import us.pochaev.jsonapi_wip.converter.parser.test.id.ProtectedAnnotatedFieldPublicGetter;
 
-class JsonApiIdParserTest {
+public class JsonApiIdParserTest {
 	//TODO make sure lomboc @Data / @Value objects work.
 	//TODO extract ReflectionUtils
 

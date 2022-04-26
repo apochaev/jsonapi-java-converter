@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
+@Deprecated
 public final class ReflectionUtils {
 
 	/**

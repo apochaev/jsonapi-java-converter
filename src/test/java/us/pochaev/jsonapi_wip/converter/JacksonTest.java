@@ -2,11 +2,14 @@ package us.pochaev.jsonapi_wip.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 
+import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.Constants;
 
 public class JacksonTest {
@@ -57,18 +60,11 @@ public class JacksonTest {
 
 
 
-
-
-
-
-
-
-
-
-	@Test
+	@Test()
 	public void testX() {
 		Object obj = new PrivateField();
-		String jsonString = JsonUtils.toJsonString(obj);
-		System.out.println(jsonString);
+		JsonApiParsingException ex = assertThrows(JsonApiParsingException.class, () ->
+			JsonUtils.toJsonString(obj));
+		assertTrue(ex.getCause() instanceof InvalidDefinitionException);
 	}
 }

@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -93,6 +94,7 @@ public class ReflectionUtilsTest {
 		assertEquals("publicFieldChild", obj.getPublicField());
 	}
 
+	@Disabled("Deprecated functionality")
 	@Test @DisplayName("WHEN getAnnotatedFields most parent most child most grand child THEN grand child public field only")
 	void mostParentMostChildMostGrandChildPublicField() throws IllegalArgumentException, IllegalAccessException {
 		TestMostParentMostChild obj = new TestMostParentMostChildMostGrandChild();

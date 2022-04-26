@@ -2,6 +2,7 @@ package us.pochaev.jsonapi_wip.converter.parser;
 
 import java.util.Map;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +18,7 @@ public class JsonApiAttributeParserTest {
 
 	@Test
 	@DisplayName("When resource identifier object then id only")
+	@Disabled("WiP")
 	void whenResourceIdentifierObjectThenIdOnly() {
 		Object obj = new ResourceIdentifierObject();
 
