@@ -54,8 +54,6 @@ public class ValueUtils {
 				}
 			}
 
-			//TODO refactor all getters in one place, change value descriptor to hold accessor only
-
 			Map<String, Method> valueGetters= findAnnotatedGetters(annotationClass, declaredMethods);
 			for (String propertyName : valueGetters.keySet()) {
 				valueDescriptorMap.put(
@@ -104,7 +102,7 @@ public class ValueUtils {
 			.stream(fields)
 			.filter(field -> ! field.isSynthetic())
 			.filter(field -> ! Modifier.isStatic(field.getModifiers()))
-			.filter(field -> (field.getAnnotation(JsonApiIgnore.class) == null))
+			.filter(field -> (field.getAnnotation(JsonApiIgnore.class) == null)) // TODO exclude matching getter ? Runtime excepton if getter is not ignored?
 			.filter(field -> (field.getAnnotation(annotationClass) != null))
 			.collect(Collectors.toList());
 	}
@@ -124,7 +122,7 @@ public class ValueUtils {
 			.stream(methods)
 				.filter(method -> ! method.isSynthetic())
 				.filter(method -> ! Modifier.isStatic(method.getModifiers()))
-				.filter(method -> ( method.getAnnotation(JsonApiIgnore.class) == null))
+				.filter(method -> ( method.getAnnotation(JsonApiIgnore.class) == null)) // TODO need to exclude matching field if JsonApiIgnore is set on the getter.
 				.filter(method -> ( method.getAnnotation(annotationClass) != null))
 				.filter(method -> ( method.getParameterCount() == 0))
 			.collect(Collectors.toList());
@@ -146,6 +144,12 @@ public class ValueUtils {
 		int modifiers = member.getModifiers();
 		return !Modifier.isStatic(modifiers) &&
 			   !Modifier.isAbstract(modifiers);
+	}
+
+
+	public static Map<String, ValueDescriptor> getValueDescriptors(Class<?>[] includeAnnoataions, Class<?>[] excludeAnnoataions, Object obj) {
+		// TODO Use reflections?
+		return null;
 	}
 
 

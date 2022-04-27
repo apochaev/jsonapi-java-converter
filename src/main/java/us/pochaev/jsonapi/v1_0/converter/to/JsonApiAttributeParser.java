@@ -2,14 +2,13 @@ package us.pochaev.jsonapi.v1_0.converter.to;
 
 
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import us.pochaev.jsonapi.reflection.value.ValueDescriptor;
 import us.pochaev.jsonapi.reflection.value.ValueUtils;
-import us.pochaev.jsonapi.v1_0.annotations.JsonApiAttribute;
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiId;
+import us.pochaev.jsonapi.v1_0.annotations.JsonApiIgnore;
 import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
 
 class JsonApiAttributeParser {
@@ -25,7 +24,8 @@ class JsonApiAttributeParser {
 	 */
 	public static Map<String, Object> parse(Object obj) {
 
-		Collection<ValueDescriptor> valueDescriptors = ValueUtils.getValueDescriptors(JsonApiAttribute.class, obj).values();
+		Map<String, ValueDescriptor> valueDescriptors = ValueUtils.getValueDescriptors(
+				null, new Class[] {JsonApiIgnore.class}, obj);
 //
 //		switch (valueDescriptors.size()) {
 //			case 1: return getValue(valueDescriptors.iterator().next(), obj);

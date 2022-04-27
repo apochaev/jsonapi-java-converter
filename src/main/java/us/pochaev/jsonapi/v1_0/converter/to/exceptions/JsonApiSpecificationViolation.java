@@ -1,7 +1,5 @@
 package us.pochaev.jsonapi.v1_0.converter.to.exceptions;
 
-import us.pochaev.jsonapi.v1_0.converter.to.JsonUtils;
-
 public class JsonApiSpecificationViolation extends RuntimeException {
 
 	private static final long serialVersionUID = 3291883509863739451L;
@@ -52,7 +50,9 @@ public class JsonApiSpecificationViolation extends RuntimeException {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + JsonUtils.toJsonString(this);
+		return "JsonApiSpecificationViolation [specUrl=" + specUrl + "]";
 	}
+
+
 
 }
