@@ -1,27 +1,27 @@
 package us.pochaev.jsonapi.reflection.value.privatefieldpublicgetter;
 
-import us.pochaev.jsonapi.reflection.TestMemberAnnotation;
+import us.pochaev.jsonapi.reflection.annotation.JsonApiTestAnnotation;
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiIgnore;
 
 public class TestClass {
 
-	@TestMemberAnnotation
+	@JsonApiTestAnnotation
 	@JsonApiIgnore
 	private Object privateIgnoredTestClassField = "privateIgnoredTestClassField";
 
-	@TestMemberAnnotation
+	@JsonApiTestAnnotation
 	private Object privateTestClassField = "privateTestClassField";
 
 	public Object getPrivateTestClassField () {
 		return privateTestClassField;
 	}
 
-	@TestMemberAnnotation
+	@JsonApiTestAnnotation
 	public Object getTestClassGetter() {
 		return "testClassGetter";
 	}
 
-	@TestMemberAnnotation
+	@JsonApiTestAnnotation
 	@JsonApiIgnore
 	public Object getIgnoredTestClassGetter() {
 		return "ignoredTestClassGetter";

@@ -1,10 +1,10 @@
 package us.pochaev.jsonapi.reflection.value.privatefieldpublicgetter;
 
-import us.pochaev.jsonapi.reflection.TestMemberAnnotation;
+import us.pochaev.jsonapi.reflection.annotation.JsonApiTestAnnotation;
 
 public class TestClassGrand extends TestClassChild {
 
-	@TestMemberAnnotation
+	@JsonApiTestAnnotation
 	public String getnonGetter() {
 		return "getNonGetter";
 	}

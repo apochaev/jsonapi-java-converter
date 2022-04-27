@@ -1,9 +1,9 @@
 package us.pochaev.jsonapi.reflection.value.privatefieldpublicgetter;
 
-import us.pochaev.jsonapi.reflection.TestMemberAnnotation;
+import us.pochaev.jsonapi.reflection.annotation.JsonApiTestAnnotation;
 
 public class TestClassChild extends TestClass {
-	@TestMemberAnnotation
+	@JsonApiTestAnnotation
 	private Object privateTestClassChildField = "privateTestClassChildField";
 
 	public Object getPrivateTestClassChildField () {

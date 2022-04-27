@@ -1,4 +1,4 @@
-package us.pochaev.jsonapi.reflection;
+package us.pochaev.jsonapi.reflection.annotation;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ FIELD, METHOD })
-public @interface TestMemberAnnotation {
+public @interface JsonApiTestAnnotation {
 
 }
