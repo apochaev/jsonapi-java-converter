@@ -8,7 +8,7 @@ public class AncestryUtils {
 		return getAncestry(object.getClass(), new Stack<Class<?>>());
 	}
 
-	static Stack<Class<?>> getAncestry(Class<?> objectClass, Stack<Class<?>> ancestry) {
+	private static Stack<Class<?>> getAncestry(Class<?> objectClass, Stack<Class<?>> ancestry) {
 
 		ancestry.push(objectClass);
 

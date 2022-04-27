@@ -1,4 +1,4 @@
-package us.pochaev.jsonapi_wip.converter;
+package us.pochaev.jsonapi.v1_0.converter.to;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

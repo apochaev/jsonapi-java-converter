@@ -1,6 +1,6 @@
 package us.pochaev.jsonapi.v1_0.converter.to.exceptions;
 
-import us.pochaev.jsonapi_wip.converter.JsonUtils;
+import us.pochaev.jsonapi.v1_0.converter.to.JsonUtils;
 
 public class JsonApiSpecificationViolation extends RuntimeException {
 

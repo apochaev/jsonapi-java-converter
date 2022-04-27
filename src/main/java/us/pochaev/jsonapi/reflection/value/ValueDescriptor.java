@@ -62,7 +62,7 @@ public class ValueDescriptor {
 		return getValueFromField(obj);
 	}
 
-	protected Object getValueFromField(Object obj) {
+	private Object getValueFromField(Object obj) {
 		try {
 			return field.get(obj);
 		} catch (IllegalArgumentException e) {
@@ -73,7 +73,7 @@ public class ValueDescriptor {
 		}
 	}
 
-	protected Object getValueFromGetter(Object obj) {
+	private Object getValueFromGetter(Object obj) {
 		Method getter = optionalGetter.get();
 		try {
 			return getter.invoke(obj, new Object[0]);

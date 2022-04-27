@@ -4,8 +4,8 @@ import java.lang.reflect.Field;
 import java.util.Optional;
 
 public class PropertyNameUtils {
-	static final String PREFIX_IS = "is";
-	static final String PREFIX_GET = "get";
+	private static final String PREFIX_IS = "is";
+	private static final String PREFIX_GET = "get";
 
 	public static Optional<String> getOptionalPropertyName(String name) {
 		if (name.startsWith(PREFIX_GET)) {
@@ -17,7 +17,7 @@ public class PropertyNameUtils {
 		return Optional.empty();
 	}
 
-	static Optional<String> getOptionalPropertyName(String prefix, String name) {
+	private static Optional<String> getOptionalPropertyName(String prefix, String name) {
 		String property = name.substring(prefix.length());
 		if (property.length() > 0 && Character.isUpperCase(property.charAt(0))) {
 			return Optional.of(decapitalize(property));

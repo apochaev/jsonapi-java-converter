@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 
+import us.pochaev.jsonapi.v1_0.converter.to.JsonUtils;
 import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.Constants;
 

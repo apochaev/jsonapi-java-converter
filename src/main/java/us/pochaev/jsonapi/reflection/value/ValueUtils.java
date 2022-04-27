@@ -98,7 +98,7 @@ public class ValueUtils {
 	 * @param fields Field array, must not be null.
 	 * @return Fields matching the criteria
 	 */
-	protected static List<Field> findAnnotatedFields(Class<? extends Annotation> annotationClass, Field[] fields) {
+	private static List<Field> findAnnotatedFields(Class<? extends Annotation> annotationClass, Field[] fields) {
 		Objects.requireNonNull(annotationClass);
 		return Arrays
 			.stream(fields)
@@ -142,7 +142,7 @@ public class ValueUtils {
 
 	}
 
-	protected static boolean isConcreteInstanceMember(Member member) {
+	private static boolean isConcreteInstanceMember(Member member) {
 		int modifiers = member.getModifiers();
 		return !Modifier.isStatic(modifiers) &&
 			   !Modifier.isAbstract(modifiers);
