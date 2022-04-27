@@ -8,9 +8,10 @@ public class NextTest {
 
 	@Test
 	public void next() {
-		fail("Clean up");
 		fail("Attribute parser");
-		fail("Relations");
 		fail("MetaItems if HasMetaItems is implements or Meta Item annotation");
+		fail("Relations");
+		fail("Extract value utils into separate project");
+
 	}
 }
