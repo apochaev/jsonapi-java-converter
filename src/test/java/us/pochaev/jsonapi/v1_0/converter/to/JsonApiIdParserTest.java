@@ -13,11 +13,11 @@ import us.pochaev.jsonapi.v1_0.converter.to.id_parser.ParentPublicField;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.PrivateAnnotatedField;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.PrivateAnnotatedFieldPrivateGetter;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.PrivateAnnotatedFieldPublicGetter;
+import us.pochaev.jsonapi.v1_0.converter.to.id_parser.ProtectedAnnotatedFieldPublicGetter;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.PublicAnnotatedFieldPrivateGetter;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.PublicField;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.TwoAnnotatedFields;
 import us.pochaev.jsonapi.v1_0.converter.to.id_parser.TwoAnnotatedMethods;
-import us.pochaev.jsonapi_wip.converter.parser.test.id.ProtectedAnnotatedFieldPublicGetter;
 
 public class JsonApiIdParserTest {
 	//TODO make sure lomboc @Data / @Value objects work.
