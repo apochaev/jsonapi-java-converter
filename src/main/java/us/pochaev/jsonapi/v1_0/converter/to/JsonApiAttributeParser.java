@@ -3,6 +3,7 @@ package us.pochaev.jsonapi.v1_0.converter.to;
 
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import us.pochaev.jsonapi.reflection.value.ValueDescriptor;
@@ -31,7 +32,7 @@ class JsonApiAttributeParser {
 //			case 0: throw mustHaveOne(obj.getClass());
 //			default : throw mustHaveSingle(obj.getClass());
 //		}
-		return null;
+		return new HashMap<String, Object>();
 	}
 
 	private static Object getValue(ValueDescriptor vd, Object obj) {

@@ -7,17 +7,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
-import us.pochaev.jsonapi.v1_0.converter.to.id_parser.Constants;
-import us.pochaev.jsonapi.v1_0.converter.to.id_parser.None;
-import us.pochaev.jsonapi.v1_0.converter.to.id_parser.ParentPublicField;
-import us.pochaev.jsonapi.v1_0.converter.to.id_parser.PrivateAnnotatedField;
-import us.pochaev.jsonapi.v1_0.converter.to.id_parser.PrivateAnnotatedFieldPrivateGetter;
-import us.pochaev.jsonapi.v1_0.converter.to.id_parser.PrivateAnnotatedFieldPublicGetter;
-import us.pochaev.jsonapi.v1_0.converter.to.id_parser.ProtectedAnnotatedFieldPublicGetter;
-import us.pochaev.jsonapi.v1_0.converter.to.id_parser.PublicAnnotatedFieldPrivateGetter;
-import us.pochaev.jsonapi.v1_0.converter.to.id_parser.PublicField;
-import us.pochaev.jsonapi.v1_0.converter.to.id_parser.TwoAnnotatedFields;
-import us.pochaev.jsonapi.v1_0.converter.to.id_parser.TwoAnnotatedMethods;
+import us.pochaev.jsonapi.v1_0.converter.to.test_classes_id.Constants;
+import us.pochaev.jsonapi.v1_0.converter.to.test_classes_id.None;
+import us.pochaev.jsonapi.v1_0.converter.to.test_classes_id.ParentPublicField;
+import us.pochaev.jsonapi.v1_0.converter.to.test_classes_id.PrivateAnnotatedField;
+import us.pochaev.jsonapi.v1_0.converter.to.test_classes_id.PrivateAnnotatedFieldPrivateGetter;
+import us.pochaev.jsonapi.v1_0.converter.to.test_classes_id.PrivateAnnotatedFieldPublicGetter;
+import us.pochaev.jsonapi.v1_0.converter.to.test_classes_id.ProtectedAnnotatedFieldPublicGetter;
+import us.pochaev.jsonapi.v1_0.converter.to.test_classes_id.PublicAnnotatedFieldPrivateGetter;
+import us.pochaev.jsonapi.v1_0.converter.to.test_classes_id.PublicField;
+import us.pochaev.jsonapi.v1_0.converter.to.test_classes_id.TwoAnnotatedFields;
+import us.pochaev.jsonapi.v1_0.converter.to.test_classes_id.TwoAnnotatedMethods;
 
 public class JsonApiIdParserTest {
 	//TODO make sure lomboc @Data / @Value objects work.
