@@ -123,7 +123,7 @@ public class JsonApiIdParserTest {
 	}
 
 	//TODO boolean, Boolean, other primitive other non primitive
-
+	//TODO check null value
 	//TODO parent public getter, child override with ignore and another id member
 
 	//TODO field ignored getter not
