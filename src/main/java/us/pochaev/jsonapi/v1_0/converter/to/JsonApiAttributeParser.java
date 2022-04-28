@@ -25,13 +25,13 @@ class JsonApiAttributeParser {
 
 		@SuppressWarnings("unchecked")
 		Map<String, ValueDescriptor> valueDescriptors = ValueUtils.getValueDescriptors(
-				new Class[0],
+				null,
 				new Class[]{JsonApiId.class, JsonApiIgnore.class},
 				obj);
 
 		for (String key : valueDescriptors.keySet()) {
 			ValueDescriptor valueDescriptor = valueDescriptors.get(key);
-			attributes.put(key, valueDescriptor.getValue(obj));
+			attributes.put(key, getValue(valueDescriptor,obj));
 		}
 
 		return attributes;

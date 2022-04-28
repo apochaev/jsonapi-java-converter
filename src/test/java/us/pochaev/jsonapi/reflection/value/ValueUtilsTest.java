@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import us.pochaev.jsonapi.reflection.annotation.JsonApiTestAnnotation;
 import us.pochaev.jsonapi.reflection.value.privatefieldpublicgetter.TestClass;
 import us.pochaev.jsonapi.reflection.value.privatefieldpublicgetter.TestClassChild;
+import us.pochaev.jsonapi.v1_0.annotations.JsonApiIgnore;
 
 /**
  * Only testing the "happy path" as there are to many permutations of field / getter visibility combinations.
@@ -25,7 +26,7 @@ class ValueUtilsTest {
 		@SuppressWarnings("unchecked")
 		Map<String, ValueDescriptor> valueDescriptors = ValueUtils.getValueDescriptors(
 				new Class[]{JsonApiTestAnnotation.class},
-				new Class[0],
+				null,
 				TestClass.class);
 		assertTrue(valueDescriptors.isEmpty());
 	}
@@ -37,9 +38,10 @@ class ValueUtilsTest {
 		@SuppressWarnings("unchecked")
 		Map<String, ValueDescriptor> valueDescriptors = ValueUtils.getValueDescriptors(
 				new Class[]{JsonApiTestAnnotation.class},
-				new Class[0],
+				new Class[]{JsonApiIgnore.class},
 				object);
-
+		valueDescriptors.values().stream().forEach(
+				item -> System.out.println(item));
 		assertEquals(2, valueDescriptors.size());
 		assertEquals("privateTestClassField", valueDescriptors.get("privateTestClassField").getValue(object));
 		assertEquals("testClassGetter", valueDescriptors.get("testClassGetter").getValue(object));
@@ -52,7 +54,7 @@ class ValueUtilsTest {
 		@SuppressWarnings("unchecked")
 		Map<String, ValueDescriptor> valueDescriptors = ValueUtils.getValueDescriptors(
 				new Class[]{JsonApiTestAnnotation.class},
-				new Class[0],
+				new Class[]{JsonApiIgnore.class},
 				object);
 
 		assertEquals(3, valueDescriptors.size());
@@ -68,7 +70,7 @@ class ValueUtilsTest {
 		@SuppressWarnings("unchecked")
 		Map<String, ValueDescriptor> valueDescriptors = ValueUtils.getValueDescriptors(
 				new Class[]{JsonApiTestAnnotation.class},
-				new Class[0],
+				new Class[]{JsonApiIgnore.class},
 				object);
 
 		assertEquals(3, valueDescriptors.size());

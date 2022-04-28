@@ -30,4 +30,6 @@ public class JsonApiAttributeParserTest {
 		assertEquals(2, attributes.size());
 		assertEquals("attributeValue1", attributes.get("attribute1"));
 	}
+	// TODO check null value of an attruibute
+	// TODO check renamed attribute (field, getter, conflicting)
 }

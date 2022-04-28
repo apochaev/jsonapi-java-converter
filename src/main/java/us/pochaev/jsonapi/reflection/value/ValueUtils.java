@@ -22,6 +22,12 @@ public class ValueUtils {
 
 	/**
 	 * Find all annotated fields find a matching public getter if no getter and not declared field drop it.
+	 * @param includeAnnotationClasses include only value descriptors annotated with ANY annotation in the array.
+	 * If the array is null, include any value descriptors.
+	 * If the array is empty include none, since no annotations are specified.
+	 * @param excludeAnnotationClasses exclude value descriptors annotated with ANY annotation in the array.
+	 * If the array is null, exclude none value descriptors.
+	 * If the array is empty exclude none, since no annotations are specified.
 	 *
 	 */
 	public static Map<String, ValueDescriptor> getValueDescriptors(
@@ -115,7 +121,6 @@ public class ValueUtils {
 			.collect(Collectors.toList());
 	}
 
-	@SuppressWarnings("unlikely-arg-type")
 	private static boolean isIncluded(
 			Class<? extends Annotation>[] includeAnnotationClasses,
 			Class<? extends Annotation>[] excludeAnnotationClasses,
@@ -127,7 +132,7 @@ public class ValueUtils {
 			result = false;
 			List<Class<? extends Annotation>> includeList = Arrays.asList(includeAnnotationClasses);
 			for (Annotation annotation: member.getAnnotations()) {
-				if (includeList.contains(annotation)) {
+				if (includeList.contains(annotation.annotationType())) {
 					result = true;
 					break;
 				}
@@ -138,7 +143,7 @@ public class ValueUtils {
 			//exclude specified even if previously included
 			List<Class<? extends Annotation>> excludeList = Arrays.asList(excludeAnnotationClasses);
 			for (Annotation annotation: member.getAnnotations()) {
-				if (excludeList.contains(annotation)) {
+				if (excludeList.contains(annotation.annotationType())) {
 					result = false;
 					break;
 				}
