@@ -27,7 +27,7 @@ public class JsonApiAttributeParserTest {
 		Object obj = new PublicField();
 
 		Map<String, Object> attributes = JsonApiAttributeParser.parse(obj);
-		assertEquals(1, attributes.size());
+		assertEquals(2, attributes.size());
 		assertEquals("attributeValue1", attributes.get("attribute1"));
 	}
 }

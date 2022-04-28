@@ -1,17 +1,15 @@
 package us.pochaev.jsonapi.reflection.value;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -26,7 +24,11 @@ public class ValueUtils {
 	 * Find all annotated fields find a matching public getter if no getter and not declared field drop it.
 	 *
 	 */
-	public static Map<String, ValueDescriptor> getValueDescriptors(Class<? extends Annotation> annotationClass, Object object) {
+	public static Map<String, ValueDescriptor> getValueDescriptors(
+			Class<? extends Annotation>[] includeAnnotationClasses,
+			Class<? extends Annotation>[] excludeAnnotationClasses,
+			Object object) {
+
 		Stack<Class<?>> objectAncestry = AncestryUtils.getAncestry(object);
 
 		Map<String, ValueDescriptor> valueDescriptorMap = new HashMap<>();
@@ -35,8 +37,11 @@ public class ValueUtils {
 			Class<?> cls = objectAncestry.pop();
 			Field[] fields = cls.getDeclaredFields();
 			Method[] declaredMethods = cls.getDeclaredMethods();
-			List<Field> valueFields = findAnnotatedFields(annotationClass, fields);
-			Collection<Method> knownGetters = new LinkedList<>();
+			List<Field> valueFields = findAnnotatedFields(
+					includeAnnotationClasses,
+					excludeAnnotationClasses,
+					fields);
+
 			for (Field field : valueFields) {
 				if (isConcreteInstanceMember(field)) {
 					String name = field.getName();
@@ -44,7 +49,6 @@ public class ValueUtils {
 					Optional<Method> optionalGetter = findGetter(field, declaredMethods);
 					if (optionalGetter.isPresent()) {
 						Method getter = optionalGetter.get();
-						knownGetters.add(getter);
 						vd = new ValueDescriptor(name, field, getter);
 					} else {
 						vd = new ValueDescriptor(name, field);
@@ -54,7 +58,11 @@ public class ValueUtils {
 				}
 			}
 
-			Map<String, Method> valueGetters= findAnnotatedGetters(annotationClass, declaredMethods);
+			Map<String, Method> valueGetters= findAnnotatedGetters(
+					includeAnnotationClasses,
+					excludeAnnotationClasses,
+					declaredMethods);
+
 			for (String propertyName : valueGetters.keySet()) {
 				valueDescriptorMap.put(
 						propertyName,
@@ -64,7 +72,6 @@ public class ValueUtils {
 
 		return valueDescriptorMap;
 	}
-
 
 	/**
 	 * Returns non-static public methods of the objectClass that match getter name convention for the provided field names.
@@ -96,15 +103,49 @@ public class ValueUtils {
 	 * @param fields Field array, must not be null.
 	 * @return Fields matching the criteria
 	 */
-	private static List<Field> findAnnotatedFields(Class<? extends Annotation> annotationClass, Field[] fields) {
-		Objects.requireNonNull(annotationClass);
+	private static List<Field> findAnnotatedFields(
+			Class<? extends Annotation>[] includeAnnotationClasses,
+			Class<? extends Annotation>[] excludeAnnotationClasses,
+			Field[] fields) {
 		return Arrays
 			.stream(fields)
 			.filter(field -> ! field.isSynthetic())
 			.filter(field -> ! Modifier.isStatic(field.getModifiers()))
-			.filter(field -> (field.getAnnotation(JsonApiIgnore.class) == null)) // TODO exclude matching getter ? Runtime excepton if getter is not ignored?
-			.filter(field -> (field.getAnnotation(annotationClass) != null))
+			.filter(field -> isIncluded(includeAnnotationClasses, excludeAnnotationClasses, field))
 			.collect(Collectors.toList());
+	}
+
+	@SuppressWarnings("unlikely-arg-type")
+	private static boolean isIncluded(
+			Class<? extends Annotation>[] includeAnnotationClasses,
+			Class<? extends Annotation>[] excludeAnnotationClasses,
+			AccessibleObject member) {
+		boolean result = true; //include all by default
+
+		if ( includeAnnotationClasses != null ) {
+			//include only specified
+			result = false;
+			List<Class<? extends Annotation>> includeList = Arrays.asList(includeAnnotationClasses);
+			for (Annotation annotation: member.getAnnotations()) {
+				if (includeList.contains(annotation)) {
+					result = true;
+					break;
+				}
+			}
+		}
+
+		if ( excludeAnnotationClasses != null ) {
+			//exclude specified even if previously included
+			List<Class<? extends Annotation>> excludeList = Arrays.asList(excludeAnnotationClasses);
+			for (Annotation annotation: member.getAnnotations()) {
+				if (excludeList.contains(annotation)) {
+					result = false;
+					break;
+				}
+			}
+		}
+
+		return result;
 	}
 
 	/**
@@ -116,14 +157,15 @@ public class ValueUtils {
 	 * @param methods Method array, must not be null.
 	 * @return Methods matching the criteria
 	 */
-	private static Map<String, Method> findAnnotatedGetters(Class<? extends Annotation> annotationClass, Method[] methods) {
-		Objects.requireNonNull(annotationClass);
+	private static Map<String, Method> findAnnotatedGetters(
+			Class<? extends Annotation>[] includeAnnotationClasses,
+			Class<? extends Annotation>[] excludeAnnotationClasses,
+			Method[] methods) {
 		List<Method> methodShortList = Arrays
 			.stream(methods)
 				.filter(method -> ! method.isSynthetic())
 				.filter(method -> ! Modifier.isStatic(method.getModifiers()))
-				.filter(method -> ( method.getAnnotation(JsonApiIgnore.class) == null)) // TODO need to exclude matching field if JsonApiIgnore is set on the getter.
-				.filter(method -> ( method.getAnnotation(annotationClass) != null))
+				.filter(method -> isIncluded(includeAnnotationClasses, excludeAnnotationClasses, method))
 				.filter(method -> ( method.getParameterCount() == 0))
 			.collect(Collectors.toList());
 
@@ -145,14 +187,5 @@ public class ValueUtils {
 		return !Modifier.isStatic(modifiers) &&
 			   !Modifier.isAbstract(modifiers);
 	}
-
-
-	public static Map<String, ValueDescriptor> getValueDescriptors(Class<?>[] includeAnnoataions, Class<?>[] excludeAnnoataions, Object obj) {
-		// TODO Use reflections?
-		return null;
-	}
-
-
-
 
 }

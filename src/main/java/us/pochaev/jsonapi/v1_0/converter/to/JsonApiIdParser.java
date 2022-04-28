@@ -7,6 +7,7 @@ import java.util.Collection;
 import us.pochaev.jsonapi.reflection.value.ValueDescriptor;
 import us.pochaev.jsonapi.reflection.value.ValueUtils;
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiId;
+import us.pochaev.jsonapi.v1_0.annotations.JsonApiIgnore;
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiObject;
 import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
 
@@ -22,8 +23,12 @@ class JsonApiIdParser {
 	 *
 	 */
 	public static String parse(Object obj) {
-
-		Collection<ValueDescriptor> valueDescriptors = ValueUtils.getValueDescriptors(JsonApiId.class, obj).values();
+		@SuppressWarnings("unchecked")
+		Collection<ValueDescriptor> valueDescriptors = ValueUtils.getValueDescriptors(
+					new Class[]{JsonApiId.class},
+					new Class[]{JsonApiIgnore.class},
+					obj)
+				.values();
 
 		switch (valueDescriptors.size()) {
 			case 1: return getValue(valueDescriptors.iterator().next(), obj);

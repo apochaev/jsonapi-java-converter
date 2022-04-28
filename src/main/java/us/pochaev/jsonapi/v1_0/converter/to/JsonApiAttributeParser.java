@@ -1,7 +1,5 @@
 package us.pochaev.jsonapi.v1_0.converter.to;
 
-
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,16 +21,20 @@ class JsonApiAttributeParser {
 	 * TODO document
 	 */
 	public static Map<String, Object> parse(Object obj) {
+		HashMap<String, Object> attributes = new HashMap<String, Object>();
 
+		@SuppressWarnings("unchecked")
 		Map<String, ValueDescriptor> valueDescriptors = ValueUtils.getValueDescriptors(
-				null, new Class[] {JsonApiIgnore.class}, obj);
-//
-//		switch (valueDescriptors.size()) {
-//			case 1: return getValue(valueDescriptors.iterator().next(), obj);
-//			case 0: throw mustHaveOne(obj.getClass());
-//			default : throw mustHaveSingle(obj.getClass());
-//		}
-		return new HashMap<String, Object>();
+				new Class[0],
+				new Class[]{JsonApiId.class, JsonApiIgnore.class},
+				obj);
+
+		for (String key : valueDescriptors.keySet()) {
+			ValueDescriptor valueDescriptor = valueDescriptors.get(key);
+			attributes.put(key, valueDescriptor.getValue(obj));
+		}
+
+		return attributes;
 	}
 
 	private static Object getValue(ValueDescriptor vd, Object obj) {
