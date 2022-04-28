@@ -170,8 +170,9 @@ public class ValueUtils {
 			.stream(methods)
 				.filter(method -> ! method.isSynthetic())
 				.filter(method -> ! Modifier.isStatic(method.getModifiers()))
-				.filter(method -> isIncluded(includeAnnotationClasses, excludeAnnotationClasses, method))
 				.filter(method -> ( method.getParameterCount() == 0))
+				.filter(method -> isIncluded(includeAnnotationClasses, excludeAnnotationClasses, method))
+				.filter(method -> ! isJdkMethod(method))
 			.collect(Collectors.toList());
 
 		Map<String, Method> results = new HashMap<>();
@@ -185,6 +186,12 @@ public class ValueUtils {
 		return results;
 
 
+	}
+
+	private static boolean isJdkMethod(Method method) {
+		return method.getName().equals("getClass") &&
+				method.getParameterCount() == 0 &&
+				method.getReturnType().equals(Class.class);
 	}
 
 	private static boolean isConcreteInstanceMember(Member member) {
