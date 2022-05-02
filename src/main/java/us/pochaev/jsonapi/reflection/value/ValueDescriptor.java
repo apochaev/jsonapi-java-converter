@@ -1,6 +1,7 @@
 package us.pochaev.jsonapi.reflection.value;
 
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
@@ -23,6 +24,7 @@ public class ValueDescriptor {
 	private final Field field;
 	private final Optional<Method> optionalGetter;
 
+
 	public ValueDescriptor(String name, Field field) {
 		this.name = Objects.requireNonNull(name);
 		this.field = Objects.requireNonNull(field);
@@ -44,7 +46,8 @@ public class ValueDescriptor {
 			optionalGetter = Optional.empty();
 		} else if (member instanceof Method) {
 			field = null;
-			optionalGetter = Optional.of((Method)member);
+			Method method = (Method)member;
+			optionalGetter = Optional.of(method);
 		} else {
 			throw new JsonApiParsingException("Unsupported member type: " + member.getClass().getName());
 		}
@@ -88,5 +91,23 @@ public class ValueDescriptor {
 	@Override
 	public String toString() {
 		return "ValueDescriptor [name=" + name + ", field=" + field + ", optionalGetter=" + optionalGetter + "]";
+	}
+
+
+	public <T extends Annotation> Optional<T> getOptionalAnnotation(Class<T> annotationClass) {
+		if (optionalGetter.isPresent()) {
+			Method method = optionalGetter.get();
+			T annotation = method.getAnnotation(annotationClass);
+			if (annotation != null) {
+				return Optional.of(annotation);
+			}
+		}
+
+		T annotation = field.getAnnotation(annotationClass);
+		if (annotation != null) {
+			return Optional.of(annotation);
+		}
+
+		return Optional.empty();
 	}
 }

@@ -2,12 +2,13 @@ package us.pochaev.jsonapi.v1_0.converter.to;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import us.pochaev.jsonapi.reflection.value.ValueDescriptor;
 import us.pochaev.jsonapi.reflection.value.ValueUtils;
+import us.pochaev.jsonapi.v1_0.annotations.JsonApiAttribute;
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiId;
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiIgnore;
-import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
 
 class JsonApiAttributeParser {
 
@@ -31,10 +32,23 @@ class JsonApiAttributeParser {
 
 		for (String key : valueDescriptors.keySet()) {
 			ValueDescriptor valueDescriptor = valueDescriptors.get(key);
-			attributes.put(key, getValue(valueDescriptor,obj));
+			attributes.put(
+					getAttributeName(valueDescriptor, key),
+					getValue(valueDescriptor,obj));
 		}
 
 		return attributes;
+	}
+
+	protected static String getAttributeName(ValueDescriptor valueDescriptor, String defaultValue) {
+		Optional<JsonApiAttribute> optionalAnnotation = valueDescriptor.getOptionalAnnotation(JsonApiAttribute.class);
+		if (optionalAnnotation.isPresent()) {
+			String customValue = optionalAnnotation.get().value();
+			if (!JsonApiAttribute.DEFAULT_VALUE.equals(customValue)) {
+				return customValue;
+			}
+		}
+		return defaultValue;
 	}
 
 	private static Object getValue(ValueDescriptor vd, Object obj) {
@@ -45,13 +59,4 @@ class JsonApiAttributeParser {
 		return null;
 	}
 
-	private static JsonApiParsingException mustHaveOne(Class<? extends Object> cls) {
-		return new JsonApiParsingException(
-				cls.getCanonicalName() + " class hierarchy must have an accessible property annotated with @" + JsonApiId.class.getSimpleName());
-	}
-
-	private static JsonApiParsingException mustHaveSingle(Class<? extends Object> cls) {
-		return new JsonApiParsingException(
-				cls.getCanonicalName() + " class hierarchy must have a single accessible property annotated with @" + JsonApiId.class.getSimpleName());
-	}
 }
