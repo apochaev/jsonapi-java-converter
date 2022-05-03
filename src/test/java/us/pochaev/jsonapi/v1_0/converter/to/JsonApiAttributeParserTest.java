@@ -43,8 +43,19 @@ public class JsonApiAttributeParserTest {
 		obj.attribute1 = null;
 
 		Map<String, Object> attributes = JsonApiAttributeParser.parse(obj);
-		assertEquals(1, attributes.size());
-		assertNull(attributes.get("attribute1"));
+		assertEquals(3, attributes.size());
+
+		String attributeKey = "attribute1";
+		assertTrue(attributes.containsKey(attributeKey));
+		assertNull(attributes.get(attributeKey));
+
+		attributeKey = "attribute2";
+		assertTrue(attributes.containsKey(attributeKey));
+		assertNull(attributes.get(attributeKey));
+
+		attributeKey = "attribute3";
+		assertTrue(attributes.containsKey(attributeKey));
+		assertNull(attributes.get(attributeKey));//renamed by the annotation
 	}
 	// TODO check null value of an attruibute
 	// TODO check renamed attribute (field, getter, conflicting)

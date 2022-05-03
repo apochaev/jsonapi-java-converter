@@ -8,8 +8,7 @@ public class NextTest {
 
 	@Test
 	public void next() {
-		fail("Attribute parser");
-		fail("MetaItems if HasMetaItems is implements or Meta Item annotation");
+		fail("JsonApiMetaItemParserTest MetaItems if Meta Item annotation");
 		fail("Relations");
 		fail("Extract value utils into separate project");
 
