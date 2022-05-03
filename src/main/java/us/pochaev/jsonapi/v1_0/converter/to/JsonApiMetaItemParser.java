@@ -9,11 +9,12 @@ import us.pochaev.jsonapi.reflection.value.ValueUtils;
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiAttribute;
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiId;
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiIgnore;
+import us.pochaev.jsonapi.v1_0.annotations.JsonApiMetaItem;
 
-class JsonApiAttributeParser {
+class JsonApiMetaItemParser {
 
 	/**
-	 * Returns map of JSON API attribute key to attribute value.
+	 * Returns map of JSON API attribute to attribute value.
 	 *
 	 * Inspects all public fields and getters to find ones not annotated with {@link JsonApIgnore}
 	 *
@@ -22,22 +23,22 @@ class JsonApiAttributeParser {
 	 * TODO document
 	 */
 	public static Map<String, Object> parse(Object obj) {
-		HashMap<String, Object> attributes = new HashMap<String, Object>();
+		HashMap<String, Object> metaItems = new HashMap<String, Object>();
 
 		@SuppressWarnings("unchecked")
 		Map<String, ValueDescriptor> valueDescriptors = ValueUtils.getValueDescriptors(
-				null,
+				new Class[]{JsonApiMetaItem.class},
 				new Class[]{JsonApiId.class, JsonApiIgnore.class},
 				obj);
 
 		for (String key : valueDescriptors.keySet()) {
 			ValueDescriptor valueDescriptor = valueDescriptors.get(key);
-			attributes.put(
+			metaItems.put(
 					getAttributeName(valueDescriptor, key),
 					getValue(valueDescriptor,obj));
 		}
 
-		return attributes;
+		return metaItems;
 	}
 
 	protected static String getAttributeName(ValueDescriptor valueDescriptor, String defaultValue) {
