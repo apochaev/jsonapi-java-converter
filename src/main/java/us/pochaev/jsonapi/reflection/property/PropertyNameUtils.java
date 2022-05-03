@@ -3,6 +3,10 @@ package us.pochaev.jsonapi.reflection.property;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
+/**
+ * @deprecated Switch to value-utils project
+ */
+@Deprecated
 public class PropertyNameUtils {
 	private static final String PREFIX_IS = "is";
 	private static final String PREFIX_GET = "get";

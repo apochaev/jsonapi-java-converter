@@ -1,6 +1,5 @@
 package us.pochaev.jsonapi.reflection.value;
 
-import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -12,13 +11,9 @@ import java.util.Optional;
 import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
 
 /**
- * Similar to {@link PropertyDescriptor}
- * No synthetic or static fields or methods, no abstract classes, no abstract methods.
- *
- * @author a.pochaev@gmail.com
- *
- * TODO update JavaDoc
+ * @deprecated Switch to value-utils project
  */
+@Deprecated
 public class ValueDescriptor {
 	private final String name;
 	private final Field field;

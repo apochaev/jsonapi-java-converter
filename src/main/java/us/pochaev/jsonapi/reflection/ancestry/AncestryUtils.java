@@ -2,6 +2,10 @@ package us.pochaev.jsonapi.reflection.ancestry;
 
 import java.util.Stack;
 
+/**
+ * @deprecated Switch to value-utils project
+ */
+@Deprecated
 public class AncestryUtils {
 
 	public static Stack<Class<?>> getAncestry(Object object) {

@@ -18,15 +18,21 @@ import us.pochaev.jsonapi.reflection.ancestry.AncestryUtils;
 import us.pochaev.jsonapi.reflection.property.PropertyNameUtils;
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiIgnore;
 
+/**
+ * @deprecated Switch to value-utils project
+ */
+@Deprecated
 public class ValueUtils {
 
 	/**
 	 * Find all annotated fields find a matching public getter if no getter and not declared field drop it.
+	 *
 	 * @param includeAnnotationClasses include only value descriptors annotated with ANY annotation in the array.
 	 * If the array is null, include any value descriptors.
 	 * If the array is empty include none, since no annotations are specified.
+	 *
 	 * @param excludeAnnotationClasses exclude value descriptors annotated with ANY annotation in the array.
-	 * If the array is null, exclude none value descriptors.
+	 * If the array is null, exclude no value descriptors.
 	 * If the array is empty exclude none, since no annotations are specified.
 	 *
 	 */
