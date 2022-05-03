@@ -1,5 +1,6 @@
 package us.pochaev.jsonapi.reflection.value;
 
+import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -8,28 +9,32 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.Optional;
 
-import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
+import us.pochaev.jsonapi.reflection.exceptions.ValueParsingException;
 
 /**
- * @deprecated Switch to value-utils project
+ * Similar to {@link PropertyDescriptor}
+ * No synthetic or static fields or methods, no abstract classes, no abstract methods.
+ *
+ * @author a.pochaev@gmail.com
+ *
+ * TODO update JavaDoc
  */
-@Deprecated
 public class ValueDescriptor {
 	private final String name;
 	private final Field field;
-	private final Optional<Method> optionalGetter;
+	private final Method getter;
 
 
 	public ValueDescriptor(String name, Field field) {
 		this.name = Objects.requireNonNull(name);
 		this.field = Objects.requireNonNull(field);
-		optionalGetter = Optional.empty();
+		getter = null;
 	}
 
 	public ValueDescriptor(String name, Field field, Method getter) {
 		this.name = Objects.requireNonNull(name);
 		this.field = Objects.requireNonNull(field);
-		optionalGetter = Optional.of(getter);
+		this.getter = Objects.requireNonNull(getter);
 	}
 
 	public ValueDescriptor(String name, Member member) {
@@ -38,13 +43,12 @@ public class ValueDescriptor {
 
 		if (member instanceof Field) {
 			field = (Field)member;
-			optionalGetter = Optional.empty();
+			getter = null;
 		} else if (member instanceof Method) {
 			field = null;
-			Method method = (Method)member;
-			optionalGetter = Optional.of(method);
+			getter = (Method)member;
 		} else {
-			throw new JsonApiParsingException("Unsupported member type: " + member.getClass().getName());
+			throw new ValueParsingException("Unsupported member type: " + member.getClass().getName());
 		}
 	}
 
@@ -53,7 +57,7 @@ public class ValueDescriptor {
 	}
 
 	public Object getValue(Object obj) {
-		if (optionalGetter.isPresent()) {
+		if (getter != null ) {
 			return getValueFromGetter(obj);
 		}
 
@@ -64,43 +68,43 @@ public class ValueDescriptor {
 		try {
 			return field.get(obj);
 		} catch (IllegalArgumentException e) {
-			throw new JsonApiParsingException(e);
+			throw new ValueParsingException(e);
 		} catch (IllegalAccessException e) {
-			throw new JsonApiParsingException(
+			throw new ValueParsingException(
 					obj.getClass().getName() + "#" + field.getName() + " must be public or have a public getter.");
 		}
 	}
 
 	private Object getValueFromGetter(Object obj) {
-		Method getter = optionalGetter.get();
 		try {
 			return getter.invoke(obj, new Object[0]);
 		} catch (IllegalAccessException e) {
-			throw new JsonApiParsingException(
+			throw new ValueParsingException(
 					obj.getClass().getName() + "#" + getter.getName() + "() must be public.");
 		} catch (IllegalArgumentException | InvocationTargetException e) {
-			throw new JsonApiParsingException(e);
+			throw new ValueParsingException(e);
 		}
 	}
 
 	@Override
 	public String toString() {
-		return "ValueDescriptor [name=" + name + ", field=" + field + ", optionalGetter=" + optionalGetter + "]";
+		return "ValueDescriptor [name=" + name + ", field=" + field + ", getter=" + getter + "]";
 	}
 
 
 	public <T extends Annotation> Optional<T> getOptionalAnnotation(Class<T> annotationClass) {
-		if (optionalGetter.isPresent()) {
-			Method method = optionalGetter.get();
-			T annotation = method.getAnnotation(annotationClass);
+		if (getter != null) {
+			T annotation = getter.getAnnotation(annotationClass);
 			if (annotation != null) {
 				return Optional.of(annotation);
 			}
 		}
 
-		T annotation = field.getAnnotation(annotationClass);
-		if (annotation != null) {
-			return Optional.of(annotation);
+		if (field != null) {
+			T annotation = field.getAnnotation(annotationClass);
+			if (annotation != null) {
+				return Optional.of(annotation);
+			}
 		}
 
 		return Optional.empty();
