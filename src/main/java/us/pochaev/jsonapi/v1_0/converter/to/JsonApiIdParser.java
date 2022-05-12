@@ -27,7 +27,7 @@ class JsonApiIdParser {
 		Collection<ValueDescriptor> valueDescriptors = ValueUtils.getValueDescriptors(
 					new Class[]{JsonApiId.class},
 					new Class[]{JsonApiIgnore.class},
-					obj)
+					obj.getClass())
 				.values();
 
 		switch (valueDescriptors.size()) {

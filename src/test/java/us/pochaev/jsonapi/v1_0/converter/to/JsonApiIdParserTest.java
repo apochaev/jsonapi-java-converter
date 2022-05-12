@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import us.pochaev.jsonapi.reflection.value.ValueParsingException;
 import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
 import us.pochaev.jsonapi.v1_0.converter.to.test_classes_id.Constants;
 import us.pochaev.jsonapi.v1_0.converter.to.test_classes_id.None;
@@ -75,7 +76,7 @@ public class JsonApiIdParserTest {
 	public void whenNotAccessibleAnnotatedFieldThenException() {
 		Object obj = new PrivateAnnotatedField();
 
-		Exception ex = assertThrows(JsonApiParsingException.class, () ->
+		Exception ex = assertThrows(ValueParsingException.class, () ->
 			JsonApiIdParser.parse(obj));
 		assertEquals(obj.getClass().getCanonicalName() + "#id must be public or have a public getter.",
 				ex.getMessage());
@@ -95,7 +96,7 @@ public class JsonApiIdParserTest {
 	public void whenNotAccessibleAnnotatedFieldNotAccessibleGetterThenException() {
 		Object obj = new PrivateAnnotatedFieldPrivateGetter();
 
-		Exception ex = assertThrows(JsonApiParsingException.class, () ->
+		Exception ex = assertThrows(ValueParsingException.class, () ->
 			JsonApiIdParser.parse(obj));
 		assertEquals(obj.getClass().getCanonicalName() + "#getId() must be public.",
 				ex.getMessage());
@@ -106,7 +107,7 @@ public class JsonApiIdParserTest {
 	public void whenAccessibleAnnotatedFieldNotAccessibleGetterThenException() {
 		Object obj = new PublicAnnotatedFieldPrivateGetter();
 
-		Exception ex = assertThrows(JsonApiParsingException.class, () ->
+		Exception ex = assertThrows(ValueParsingException.class, () ->
 			JsonApiIdParser.parse(obj));
 		assertEquals(obj.getClass().getCanonicalName() + "#getId() must be public.",
 			ex.getMessage());

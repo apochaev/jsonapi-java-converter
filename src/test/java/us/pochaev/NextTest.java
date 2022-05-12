@@ -10,7 +10,10 @@ public class NextTest {
 	public void next() {
 		fail("JsonApiMetaItemParserTest MetaItems if Meta Item annotation");
 		fail("Relations");
-		fail("Extract value utils into separate project");
+		fail("Converter.from");
+		fail("JavaDoc");
+		fail("moar tests");
+		fail("README");
 
 	}
 }

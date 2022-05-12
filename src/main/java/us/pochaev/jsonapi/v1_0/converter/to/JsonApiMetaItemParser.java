@@ -29,7 +29,7 @@ class JsonApiMetaItemParser {
 		Map<String, ValueDescriptor> valueDescriptors = ValueUtils.getValueDescriptors(
 				new Class[]{JsonApiMetaItem.class},
 				new Class[]{JsonApiId.class, JsonApiIgnore.class},
-				obj);
+				obj.getClass());
 
 		for (String key : valueDescriptors.keySet()) {
 			ValueDescriptor valueDescriptor = valueDescriptors.get(key);

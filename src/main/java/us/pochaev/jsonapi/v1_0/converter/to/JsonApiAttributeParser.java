@@ -28,7 +28,7 @@ class JsonApiAttributeParser {
 		Map<String, ValueDescriptor> valueDescriptors = ValueUtils.getValueDescriptors(
 				null,
 				new Class[]{JsonApiId.class, JsonApiIgnore.class},
-				obj);
+				obj.getClass());
 
 		for (String key : valueDescriptors.keySet()) {
 			ValueDescriptor valueDescriptor = valueDescriptors.get(key);
