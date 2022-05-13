@@ -61,14 +61,14 @@ public class JsonApiObjectParserTest {
 	public void whenNullObjectThenException() {
 		Object obj = null;
 		assertThrows(NullPointerException.class, () ->
-			JsonApiObjectParser.parseType(obj));
+			JsonApiObjectParser.parse(obj));
 	}
 
 	@Test @DisplayName("WHEN NOT @JsonApiObject THEN exception")
 	public void whenNotJsonApiObjectThenException() {
 		Object obj = new NotJsonApiObject();
 		Exception e = assertThrows(JsonApiParsingException.class, () ->
-			JsonApiObjectParser.parseType(obj));
+			JsonApiObjectParser.parse(obj));
 		assertEquals(obj.getClass().getCanonicalName() + " must be annotated with @JsonApiObject.",
 				e.getMessage());
 	}
@@ -79,7 +79,7 @@ public class JsonApiObjectParserTest {
 		obj.id = "unique";
 
 		Exception e = assertThrows(JsonApiParsingException.class, () ->
-			JsonApiObjectParser.parseType(obj));
+			JsonApiObjectParser.parse(obj));
 		assertEquals(obj.getClass().getCanonicalName() + " @JsonApiObject value must be valid.",
 				e.getMessage());
 		assertEquals("Member names MUST contain at least one character.",
@@ -90,7 +90,7 @@ public class JsonApiObjectParserTest {
 	public void whenBlankValueThenException() {
 		Object obj = new BlankType();
 		Exception e = assertThrows(JsonApiParsingException.class, () ->
-			JsonApiObjectParser.parseType(obj));
+			JsonApiObjectParser.parse(obj));
 		assertEquals(obj.getClass().getCanonicalName() + " @JsonApiObject value must be valid.",
 				e.getMessage());
 		assertEquals("Member names MUST start and end with a “globally allowed character”.",
@@ -101,7 +101,7 @@ public class JsonApiObjectParserTest {
 	public void whenValueStartsSpaceThenException() {
 		Object obj = new StartsBlankType();
 		Exception e = assertThrows(JsonApiParsingException.class, () ->
-			JsonApiObjectParser.parseType(obj));
+			JsonApiObjectParser.parse(obj));
 		assertEquals(obj.getClass().getCanonicalName() + " @JsonApiObject value must be valid.",
 				e.getMessage());
 		assertEquals("Member names MUST start and end with a “globally allowed character”.",
@@ -112,7 +112,7 @@ public class JsonApiObjectParserTest {
 	public void whenValueEndsSpaceThenException() {
 		Object obj = new EndsBlankType();
 		Exception e = assertThrows(JsonApiParsingException.class, () ->
-			JsonApiObjectParser.parseType(obj));
+			JsonApiObjectParser.parse(obj));
 		assertEquals(obj.getClass().getCanonicalName() + " @JsonApiObject value must be valid.",
 				e.getMessage());
 		assertEquals("Member names MUST start and end with a “globally allowed character”.",
@@ -124,7 +124,7 @@ public class JsonApiObjectParserTest {
 		DefaultType obj = new DefaultType();
 		obj.id = "unique";
 
-		String type = JsonApiObjectParser.parseType(obj);
+		String type = JsonApiObjectParser.parse(obj);
 
 		assertEquals(DefaultType.class.getSimpleName(), type);
 	}
@@ -134,7 +134,7 @@ public class JsonApiObjectParserTest {
 		ValidType obj = new ValidType();
 		obj.id = "id";
 
-		String type = JsonApiObjectParser.parseType(obj);
+		String type = JsonApiObjectParser.parse(obj);
 
 		assertEquals(TYPE_VALID, type);
 	}
@@ -143,7 +143,7 @@ public class JsonApiObjectParserTest {
 	public void whenInvalidValueThenException() {
 		Object obj = new InvalidType();
 		Exception e = assertThrows(JsonApiParsingException.class, () ->
-			JsonApiObjectParser.parseType(obj));
+			JsonApiObjectParser.parse(obj));
 		assertEquals(obj.getClass().getCanonicalName() + " @JsonApiObject value must be valid.",
 				e.getMessage());
 		assertEquals("Member names MUST contain only the allowed characters.",

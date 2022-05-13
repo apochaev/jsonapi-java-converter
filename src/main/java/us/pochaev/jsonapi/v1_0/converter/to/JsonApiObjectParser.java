@@ -23,7 +23,7 @@ class JsonApiObjectParser {
 	 * @param obj
 	 * @return JSON API Object type.
 	 */
-	static String parseType(Object obj) {
+	static String parse(Object obj) {
 		Objects.requireNonNull(obj);
 
 		Class<? extends Object> objClass = obj.getClass();

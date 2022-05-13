@@ -32,7 +32,7 @@ public class JsonApiObjectParserClassHierarchyTest {
 		Child obj = new Child();
 		obj.id = "unique";
 
-		String type = JsonApiObjectParser.parseType(obj);
+		String type = JsonApiObjectParser.parse(obj);
 
 		assertEquals(TYPE_CHILD, type);
 	}
@@ -41,7 +41,7 @@ public class JsonApiObjectParserClassHierarchyTest {
 	public void whenNotJsonApiObjectChildThenException() {
 		Object obj = new NotJsonApiChild();
 		Exception e = assertThrows(JsonApiParsingException.class, () ->
-			JsonApiObjectParser.parseType(obj));
+			JsonApiObjectParser.parse(obj));
 		assertEquals(obj.getClass().getCanonicalName() + " must be annotated with @JsonApiObject.",
 				e.getMessage());
 	}

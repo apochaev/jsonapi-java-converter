@@ -2,11 +2,16 @@ package us.pochaev.jsonapi.v1_0.converter.to.example;
 
 import us.pochaev.jsonapi.v1_0.annotations.JsonApiId;
 
-public class JsonApiObjectBase {
+public abstract class AbstractJsonApiObject {
 	@JsonApiId
-	private String id;
+	private final String id;
+
+	public AbstractJsonApiObject(String id) {
+		this.id = id;
+	}
 
 	public String getId( ) {
 		return id;
 	}
+
 }

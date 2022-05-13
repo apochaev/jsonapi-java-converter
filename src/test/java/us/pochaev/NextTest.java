@@ -8,7 +8,7 @@ public class NextTest {
 
 	@Test
 	public void next() {
-		fail("JsonApiMetaItemParserTest MetaItems if Meta Item annotation");
+
 		fail("Relations");
 		fail("Converter.from");
 		fail("JavaDoc");

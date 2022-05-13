@@ -48,6 +48,10 @@ public class All {
 		return null;
 	}
 
+	@JsonApiMetaItem("metaItemNull")
+	public Object getMetaItemNull() {
+		return null;
+	}
 
 }
 

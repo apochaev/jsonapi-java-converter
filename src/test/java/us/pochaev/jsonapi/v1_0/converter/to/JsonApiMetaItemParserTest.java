@@ -2,6 +2,7 @@ package us.pochaev.jsonapi.v1_0.converter.to;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static us.pochaev.jsonapi.v1_0.converter.to.test_classes_meta.All.META_ITEM_ANNOTATED_RENAMED_VALUE;
 import static us.pochaev.jsonapi.v1_0.converter.to.test_classes_meta.All.META_ITEM_ANNOTATED_VALUE;
@@ -32,7 +33,8 @@ public class JsonApiMetaItemParserTest {
 	public void whenPublicFieldThenAttribute() {
 		All obj = new All();
 		Map<String, Object> metaItems = JsonApiMetaItemParser.parse(obj);
-		assertEquals(4, metaItems.size());
+		assertEquals(5, metaItems.size());
+
 		assertEquals(META_ITEM_ANNOTATED_VALUE, metaItems.get("metaItemAnnotated"));
 		assertFalse(metaItems.containsKey("notAnnotated"));
 		assertFalse(metaItems.containsKey("metaItemAnnotatedIgnored"));
@@ -41,9 +43,9 @@ public class JsonApiMetaItemParserTest {
 		assertEquals(META_ITEM_GETTER_VALUE, metaItems.get("metaItemGetter"));
 		assertEquals(META_ITEM_GETTER_RENAMED_VALUE, metaItems.get("metaItemGetterRenamed"));
 		assertFalse(metaItems.containsKey("metaItemGetterIgnored"));
+		assertTrue(metaItems.containsKey("metaItemNull"));
+		assertNull(metaItems.get("metaItemNull"));
 	}
 
-
-	// TODO check null value of an metaItem
 	// TODO check renamed attribute (field, getter, conflicting)
 }

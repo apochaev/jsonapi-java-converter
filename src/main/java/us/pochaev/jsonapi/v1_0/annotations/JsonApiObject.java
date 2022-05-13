@@ -14,10 +14,10 @@ import us.pochaev.jsonapi.v1_0.converter.to.exceptions.JsonApiParsingException;
  * Default value indicates that the simple class name {@link Class#getSimpleName()} is used as the resource object type.
  * Value can be changed to a non empty value that should be compliant with <a href="https://jsonapi.org/format/1.0/#document-member-names">JSON API Memeber Names</a>
  *
- * Annotated class must have a public property annotated with {@link JsonApiId},
+ * Annotated class must have a public field or a property annotated with {@link JsonApiId},
  * otherwise a {@link JsonApiParsingException} should occur during conversion.
  *
- * All public properties of the class will be converted to resource object attributes,
+ * All public fields and properties of the class will be converted to resource object attributes,
  * unless the field or getter of the property is annotated with {@link JsonApiIgnore}.
  *
  * Resource object attribute with name @{literal id} is not allowed, therefore
